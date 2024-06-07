@@ -1,0 +1,514 @@
+/* Import Bootstrap CSS */
+@import url('https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css');
+
+html, body {
+    height: 100%;
+}
+
+/* Import sans-serif font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: right;
+    position: relative;
+    z-index: 1;
+    margin-top: 0px;
+    width: 100%;
+    height: fit-content;
+}
+
+body {
+    font-family: sans-serif;
+    width: 100%;
+    height: 100%;
+    background-color: #171717;
+    color: #f2f2f2;
+    position: absolute;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+label {
+    margin-bottom: 5px;
+}
+
+input {
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.button-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 20px;
+    margin-top: 70px;
+}
+
+.button-container button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid #333;
+    font-size: 16px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+#amount {
+    width: 100px;
+    padding: 5px;
+    font-size: 16px;
+}
+
+#submit-button {
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    background-color: #b95454;
+}
+
+.selected {
+    background-color: #b95454 ;
+    color: whitesmoke;
+}
+
+/*Nav Bar styling material below*/
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+.container {
+    max-width: 1050px;
+    width: 100%;
+    margin: auto;
+    text-align: center;
+    height: 800px;
+    z-index: 1;
+}
+
+@media only screen and (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+}
+
+.navbar {
+    margin-top: 30px;
+    box-shadow: 0 1px 4px rgb(0 0 0 / 1050px);
+    padding: 0;
+}
+
+.nav-container {
+    margin-top: -20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 40px;
+}
+
+.navbar .menu-items {
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.menu-items button {
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    background-color: #b95454;
+}
+
+.navbar .nav-container li {
+    list-style: none;
+}
+
+.navbar .nav-container a {
+    text-decoration: none;
+    color: #b95454;
+    font-weight: 500;
+    font-size: 1.2rem;
+    padding: 0;
+    width: 100%;
+}
+
+.navbar .nav-container a:hover {
+    font-weight: bolder;
+}
+
+.nav-container {
+    display: block;
+    position: absolute;
+    height: 60px;
+    width: 100%;
+}
+
+.nav-container .checkbox {
+    position: absolute;
+    display: block;
+    height: 32px;
+    width: 32px;
+    top: 20px;
+    left: 20px;
+    z-index: 98;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+}
+
+.nav-container .hamburger-lines {
+    display: block;
+    height: 26px;
+    width: 32px;
+    position: absolute;
+    top: 17px;
+    left: 20px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.nav-container .hamburger-lines .line {
+    display: block;
+    height: 4px;
+    width: 100%;
+    border-radius: 10px;
+    background: #b95454;
+}
+
+.nav-container .hamburger-lines .line1 {
+    transform-origin: 0% 0%;
+    transition: transform 0.4s ease-in-out;
+}
+
+.nav-container .hamburger-lines .line2 {
+    transition: transform 0.2s ease-in-out;
+}
+
+.nav-container .hamburger-lines .line3 {
+    transform-origin: 0% 100%;
+    transition: transform 0.4s ease-in-out;
+}
+
+.navbar .menu-items {
+    padding-top: 120px;
+    box-shadow: inset 100 100 2000px rgba(255, 255, 255, 0.9);
+    height: 100%;
+    width: 100%;
+    left: 0%;
+    top: 0;
+    transform: translate(-150%);
+    display: flex;
+    flex-direction: column;
+    margin-right: 0;
+    padding-right: 0;
+    transition: transform 0.5s ease-in-out;
+    text-align: center;
+    background-color: #171717;
+    position: fixed;
+}
+
+.navbar .menu-items li {
+    margin-bottom: 1.2rem;
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.logo {
+    position: absolute;
+    top: 5px;
+    right: 15px;
+    font-size: 1.2rem;
+    color: #0e2431;
+}
+
+.nav-container input[type="checkbox"]:checked ~ .menu-items {
+    transform: translateX(0);
+}
+
+.nav-container input[type="checkbox"]:checked ~ .hamburger-lines .line1 {
+    transform: rotate(45deg);
+}
+
+.nav-container input[type="checkbox"]:checked ~ .hamburger-lines .line2 {
+    transform: scaleY(0);
+}
+
+.nav-container input[type="checkbox"]:checked ~ .hamburger-lines .line3 {
+    transform: rotate(-45deg);
+}
+
+.nav-container input[type="checkbox"]:checked ~ .logo {
+    display: none;
+}
+
+.amount-container {
+    margin-bottom: 20px;
+}
+
+.scrollable-content {
+    width: 100%; /* Fit to the width of the screen */
+    max-height: 90vh; /* Fit to the height of the screen */
+    overflow: auto; /* Enable vertical scrollbar if content exceeds container height */
+}
+
+.username {
+    position: absolute; /* Position the container relative to the viewport */
+    top: 20px; /* Add space between username and top of viewport */
+    /* Distance from the right edge of the viewport */
+    right: 30%;
+    left: 30%;
+    color: #b95454;
+    z-index: 1;
+    height: 10px;
+    font-size: 18px;
+}
+
+.top-right-container {
+    position: absolute; /* Position the container relative to the viewport */
+    top: 20px;  /* Distance from the top edge of the viewport */
+    /* Distance from the right edge of the viewport */
+    color: #b95454;
+    z-index: 2;
+    right: 5px;
+    height: 15px;
+}
+
+
+/* Styling the Bets lists */
+
+.data-container {
+    color: #b95454;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 20px auto; /* Center the container horizontally */
+    max-width: 400px;
+    overflow: auto; /* Add scrollbar if content overflows */
+    display: flex; /* Use flexbox layout */
+    flex-wrap: wrap; /* Allow items to wrap to the next line */
+    justify-content: center; /* Center items horizontally */
+}
+
+.data-container ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+}
+
+.data-container li {
+    margin-bottom: 5px;
+    margin-right: 10px;
+}
+
+.data-container li:last-child {
+    margin-bottom: 0; /* Remove margin bottom from last item */
+}
+
+/* Custom styles for the modal */
+.modal-content {
+    background-color: #333;
+    color: #b95454;
+    animation: fadeInUp 0.5s ease;
+    border: none;
+    box-shadow: none;
+    font-size: 60px;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translate3d(0, -50px, 0);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* Center align text within modal body */
+.modal-body {
+    text-align: center;
+    border: none;
+}
+
+.modal-header .modal-title {
+    text-align: center;
+    width: 100%;
+    margin: 0;
+    font-size: 35px;
+}
+
+.modal-footer {
+    border-top: none;
+}
+
+.modal-header {
+    border-bottom: none;
+}
+
+/* Center the modal vertically and horizontally */
+        .modal-dialog {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0 auto;
+            position:relative;
+        }
+
+        /* Add congratulatory animation */
+        @keyframes congratulatory {
+            0% { transform: translateY(100%); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .congratulatory {
+            animation: congratulatory 1s ease forwards;
+        }
+
+        /* Add party bomber effect */
+        .party-bomber {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 100px; /* Adjust as needed */
+            height: 100px; /* Adjust as needed */
+            border-radius: 50%;
+            background-color: #f00; /* Adjust color as needed */
+            opacity: 0;
+            pointer-events: none;
+        }
+        /* Add blast unbox animation */
+        @keyframes blast-unbox {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .blast-unbox {
+            animation: blast-unbox 1s ease forwards;
+        }
+
+        /* Add confetti effect */
+        .confetti-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+             /* Disable pointer events to allow interaction with modal content */
+             /* Ensure confetti appears above modal content */
+             pointer-events: none; /* Disable pointer events to allow interaction with modal content */
+            z-index: 9999;
+        }
+
+        .confetti-piece {
+            width: 10px;
+            height: 10px;
+            position: absolute;
+            background-color: #f50;
+            transform: rotateZ(45deg);
+            animation: confetti-fall 4s ease infinite;
+            opacity: 0;
+        }
+
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100vh) rotateZ(45deg); opacity: 0; }
+            100% { transform: translateY(100vh) rotateZ(45deg); opacity: 1; }
+        }
+
+
+ /*Toggle switch style*/
+
+ .slot-selection {
+     display: flex;
+     align-items: center;
+     position: relative;
+     width: 200px; /* Adjust the width as needed */
+     height: 40px; /* Adjust the height as needed */
+     border-radius: 20px; /* Half of height for rounded appearance */
+     background-color: #ccc;
+     overflow: hidden;
+     text-align: center;
+     position: absolute;
+     top: 15%;
+     left: 50%;
+     transform: translate(-50%, -50%);
+ }
+
+ .slot-button {
+     flex: 1;
+     height: 100%;
+     background-color: transparent;
+     border: none;
+     outline: none;
+     cursor: pointer;
+     font-size: 14px; /* Adjust font size as needed */
+     transition: background-color 0.3s;
+ }
+
+ .slot-button.active {
+     background-color: rgba(0, 0, 0, 0.1);
+     color: #b95454;
+     font-weight: bolder;
+ }
+
+ .switch-slider {
+     position: absolute;
+     top: 0;
+     left: 0;
+     width: 50%;
+     height: 100%;
+     transition: transform 0.3s;
+ }
+
+ .slot-button:not(.active) {
+     opacity: 0.2; /* Dim the inactive slots */
+ }
+
+ /*List styling*/
+
+ .slot-content {
+     list-style: none;
+     padding: 0;
+ }
+
+ .slot-content li {
+     border-bottom: 1px solid #ccc;
+     list-style: none;
+     padding: 10px;
+ }
+
+ .slot-content li:last-child {
+     list-style: none;
+     border-bottom: none;
+ }
+
+ h2{
+    font-family: sans-serif;
+    top: 10px;
+    color: #b95454;
+    font-size: 6 px;
+    }
+p{
+    font-family: sans-serif;
+    top: 10px;
+    color: #b95454;
+    font-size: 10 px;
+    bottom: 10px;
+    margin:0;
+}

@@ -1,0 +1,34 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+#transactionsList {
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.transaction-item {
+    border-bottom: 1px solid #ccc;
+    padding: 10px 0;
+}
+
+.transaction-item:last-child {
+    border-bottom: none;
+}
+
+.transaction-item p {
+    margin: 5px 0;
+}
+
+.transaction-item .transaction-id {
+    font-weight: bold;
+}

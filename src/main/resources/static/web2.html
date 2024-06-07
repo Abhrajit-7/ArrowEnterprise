@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Message</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Custom styles for the modal */
+        .modal-content {
+            background-color: #333;
+            color: #b95454;
+            animation: fadeInUp 0.5s ease;
+            border: none;
+            box-shadow: none;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translate3d(0, -50px, 0);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+        /* Center align text within modal body */
+        .modal-body{
+            text-align: center;
+            border:none;
+            font-size: 60px;
+        }
+        .modal-header .modal-title {
+            text-align: center;
+            width: 100%;
+            margin: 0;
+            font-size: 24px;
+        }
+        .modal-footer {
+            border-top: none;
+        }
+        .modal-header {
+            border-bottom: none;
+        }
+        /* Center the modal vertically and horizontally */
+        .modal-dialog {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0 auto;
+            position:relative;
+        }
+
+        /* Add congratulatory animation */
+        @keyframes congratulatory {
+            0% { transform: translateY(100%); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .congratulatory {
+            animation: congratulatory 1s ease forwards;
+        }
+
+        /* Add party bomber effect */
+        .party-bomber {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 100px; /* Adjust as needed */
+            height: 100px; /* Adjust as needed */
+            border-radius: 50%;
+            background-color: #f00; /* Adjust color as needed */
+            opacity: 0;
+            pointer-events: none;
+        }
+        /* Add blast unbox animation */
+        @keyframes blast-unbox {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .blast-unbox {
+            animation: blast-unbox 1s ease forwards;
+        }
+
+        /* Add confetti effect */
+        .confetti-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+             /* Disable pointer events to allow interaction with modal content */
+             /* Ensure confetti appears above modal content */
+             pointer-events: none; /* Disable pointer events to allow interaction with modal content */
+            z-index: 9999;
+        }
+
+        .confetti-piece {
+            width: 10px;
+            height: 10px;
+            position: absolute;
+            background-color: #f50;
+            transform: rotateZ(45deg);
+            animation: confetti-fall 4s ease infinite;
+            opacity: 0;
+        }
+
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100vh) rotateZ(45deg); opacity: 0; }
+            100% { transform: translateY(100vh) rotateZ(45deg); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Modal HTML Markup -->
+<div id="messageModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Winner</h5 >
+                <!--button-- type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button-->
+            </div>
+            <div class="modal-body" id="messageContent">
+                <!-- Message content will be displayed here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">OK</button>
+            </div>
+            <!-- Confetti container -->
+            <div class="confetti-container"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Your WebSocket message display container -->
+<div id="promptContainer"></div>
+
+<!-- JavaScript code -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script>
+    // Connect to WebSocket server
+    var stompClient = null;
+    var socket = new SockJS('/ws');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function(frame) {
+        console.log(frame);
+        stompClient.subscribe('/all/messages', function(result) {
+            showMessage(JSON.parse(result.body));
+        });
+    });
+
+    // Function to display message in modal dialog
+    function showMessage(message) {
+        var messageContent = document.getElementById('messageContent');
+        messageContent.innerHTML = message.text;
+
+        // Show the modal dialog
+        $('#messageModal').modal('show');
+
+        // Add congratulatory animation class to the message
+        messageContent.classList.add('congratulatory');
+
+         // Add blast unbox animation class to the modal body
+        messageContent.classList.add('blast-unbox');
+
+        // Create confetti pieces
+        var confettiContainer = document.querySelector('.confetti-container');
+        for (var i = 0; i < 100; i++) {
+            var confettiPiece = document.createElement('div');
+            confettiPiece.classList.add('confetti-piece');
+            confettiPiece.style.left = Math.random() * 100 + '%';
+            confettiPiece.style.backgroundColor = randomColor();
+            confettiPiece.style.animationDelay = Math.random() * 2 + 's';
+            confettiContainer.appendChild(confettiPiece);
+        }
+
+        // Remove confetti after animation
+        setTimeout(function() {
+            confettiContainer.innerHTML = ''; // Clear confetti pieces
+        }, 5000); // Adjust duration as needed
+
+        // Store the number in local storage
+        localStorage.setItem('winningNumber', message.text);
+    }
+
+    // Function to generate random color
+    function randomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+    // Retrieve the number from local storage on page load
+    window.onload = function() {
+        var winningNumber = localStorage.getItem('winningNumber');
+        if (winningNumber) {
+            showMessage({ text: winningNumber }); // Show the number in the modal dialog
+        }
+    };
+</script>
+</body>
+</html>

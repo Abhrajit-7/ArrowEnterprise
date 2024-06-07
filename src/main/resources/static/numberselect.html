@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USER DASHBOARD</title>
+    <link rel="stylesheet" href="/css/numberselect.css">
+    <style>
+
+    </style>
+
+
+
+</head>
+<body>
+
+    <header>
+        <!-- Navigation Menu -->
+        <nav>
+            <div class="navbar">
+              <div class="container nav-container">
+                  <input class="checkbox" type="checkbox" name="" id="" />
+                  <div class="hamburger-lines">
+                    <span class="line line1"></span>
+                    <span class="line line2"></span>
+                    <span class="line line3"></span>
+                  </div>  
+                
+                <div class="menu-items">
+                    <li><a href="/html/navBar/profile.html">Profile</a></li>
+                    <li><a href="/html/navBar/deposit2.html">Deposit</a></li>
+                    <li><a href="/html/navBar/withdraw.html">Withdrawals</a></li>
+                    <li><a href="/html/navBar/wallet.html">My Wallet</a></li>
+                    <li><a href="/html/navBar/transaction.html">View Transactions</a></li>
+                    <li><a href="/html/navBar/add_member.html">Add Member</a></li>
+                </div>
+              </div>
+            </div>
+          </nav>
+    </header>
+    <div class="scrollable-content">
+    <div class="container">
+        
+        <h1>Select your numbers</h1>
+        <div id="number-buttons" class="button-container">
+            <!-- Number buttons will be added dynamically here -->
+        </div>
+        <div id="amount-input" class="amount-container">
+            <label for="amount">Amount : </label>
+            <input id="amount" min="0" value="0">
+        </div>
+        <button id="submit-button">Submit</button>
+
+        <div id="data-container" class="data-container"></div>
+
+        <h1>Your Bets</h1>
+         <div class="selected-container" id="selected-container"></div>
+
+
+        <div class="account-balance">
+            <div class="username">
+               <h2> Welcome! <span id="username"> </span></h2>
+            </div>
+            <div class="top-right-container">
+            <h2>Balance:
+                <span id="balance-display"> 1000.00 </span>
+            </h2>
+            </div>
+        </div>
+
+    </div>
+
+    </div>
+    <script src="/js/nt2.js">
+    </script>
+</body>
+</html>

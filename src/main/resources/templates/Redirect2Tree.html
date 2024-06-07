@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Page</title>
+</head>
+<body>
+<!-- Your HTML content here -->
+
+    <h1>
+        Redirecting ...
+    </h1>
+
+<script>
+    window.onload = function() {
+        var xhr = new XMLHttpRequest();
+        const token=localStorage.getItem('jwtToken');
+        xhr.open('GET', 'http://localhost:8081/showMembers', true);
+        xhr.setRequestHeader('Authorization', token);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    // Handle successful response
+                    console.log(xhr.responseText); // Example: log the response to the console
+                } else {
+                    console.error('Request failed with status:', xhr.status);
+                }
+            }
+        };
+        xhr.send();
+    };
+</script>
+</body>
+</html>

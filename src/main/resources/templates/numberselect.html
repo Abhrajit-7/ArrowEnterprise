@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USER DASHBOARD</title>
+    <!-- Include Bootstrap CSS -->
+    <!link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/numberselect.css">
+    <style>
+
+    </style>
+
+
+
+</head>
+<body>
+
+<!-- Prompt will be displayed here -->
+<!-- Your WebSocket message display container -->
+<div id="promptContainer"></div>
+
+    <header>
+        <!-- Navigation Menu -->
+        <nav>
+            <div class="navbar">
+              <div class="container nav-container">
+                  <input class="checkbox" type="checkbox" name="" id="" />
+                  <div class="hamburger-lines">
+                    <span class="line line1"></span>
+                    <span class="line line2"></span>
+                    <span class="line line3"></span>
+                  </div>  
+                
+                <div class="menu-items">
+                    <li><a href="/profile">Profile/KYC</a></li>
+                    <li><a href="/depositPage">Deposit</a></li>
+                    <li><a href="/withdraw">Withdrawals</a></li>
+                    <li><a href="/viewTransactions">Transaction History</a></li>
+                    <li><a href="/showMembers">Members</a></li>
+                    <li><a href="/results">Slot-wise Result</a></li>
+                    <li><button onclick="logout()">Logout</button></li>
+                </div>
+              </div>
+            </div>
+          </nav>
+    </header>
+    <div class="scrollable-content">
+    <div class="container">
+
+        <div class="slot-selection">
+            <button class="slot-button active" data-slot="1">Slot 1 </button>
+            <button class="slot-button" data-slot="2">Slot 2 </button>
+            <div class="switch-slider"></div>
+        </div>
+
+        <div id="number-buttons" class="button-container">
+            <!-- Number buttons will be added dynamically here -->
+            <!-- Enter the numbers -->
+        </div>
+        <div id="amount-input" class="amount-container">
+            <!-- Enter amount -->
+            <label for="amount">Amount : </label>
+            <input id="amount" min="0" value="0">
+        </div>
+        <button id="submit-button">Submit</button>
+
+        <!--div id="data-container" class="data-container">
+            /*List will be added dynamically here */
+        </div -->
+        <br/>
+        <div class="slot-content" id="slot-1">
+            <br />
+            <h2> Slot 1 </h2>
+            <ul id="data-container-slot-1">
+                <!-- Data for slot 1 will be rendered here -->
+            </ul>
+        </div>
+
+        <div class="slot-content" id="slot-2" style="display: none;">
+            <br />
+            <h2> Slot 2 </h2>
+            <ul id="data-container-slot-2">
+                <!-- Data for slot 2 will be rendered here -->
+            </ul>
+        </div>
+
+
+        <div class="account-balance">
+            <div class="username">
+               <p> Welcome! <span id="username"> </span></p>
+            </div>
+            <div class="top-right-container">
+            <p>Balance: <span id="balance"> </span>
+            <p>ID: <span id="id"> </span>
+            </p>
+            </div>
+        </div>
+    </div>
+    </div>
+
+<!-- Modal HTML Markup -->
+<div id="messageModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5 >
+                <!--button-- type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button-->
+            </div>
+            <div class="modal-body" id="messageContent">
+                <!-- Message content will be displayed here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">OK</button>
+            </div>
+            <!-- Confetti container -->
+            <div class="confetti-container"></div>
+        </div>
+    </div>
+</div>
+
+
+
+    <!-- JavaScript code -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="/js/nt2.js">
+    </script>
+<footer>
+    <p>&copy; 2024 Arrow Enterprise. All rights reserved.</p>
+</footer>
+</body>
+</html>

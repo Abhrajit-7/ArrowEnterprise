@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<!--suppress XmlInvalidId -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Sign Up - Arrow Enterprise</title>
+</head>
+<body>
+
+    <div class="animated-background"></div>
+
+<header>
+    <h1>Arrow Enterprise</h1>
+</header>
+
+<section class="signup-section">
+    <h2>Create an Account</h2>
+    <form id="signup-section" >
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" title="Username should be at least 3 characters long and can contain letters, numbers, and special characters like _@./#&+-" required>
+        <span class="error" id="usernameError"></span>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <label for="parentId">ReferrerID:</label>
+        <input type="parentId" id="parentId" name="parentId" required>
+
+        <label for="role"></label><select id="role">
+            <option value="INDI_USER">USER</option>
+            <option value="AGENT">AGENT</option>
+        </select><br>
+
+        <button type="submit">Sign Up</button>
+
+        
+    </form>
+    <script src="/signup.js"></script>
+    <p>Already have an account? <a href="/login">Log in here</a>.</p>
+    <p><a href="/index"/> No? Lets go back </p>
+</section>
+
+<footer>
+    <p>&copy; 2024 Arrow Enterprise. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

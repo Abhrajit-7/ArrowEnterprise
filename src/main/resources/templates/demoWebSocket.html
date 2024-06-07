@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+            margin-top: 20px; /* Add space above and below the button container */
+        }
+        .button-container button {
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #b95454;
+            border: none;
+            color: #fff;
+            border-radius: 5px;
+            margin-right: 10px; /* Add space between button and input */
+        }
+        .button-container input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px; /* Add space between inputs */
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #b95454;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #b95454;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background-color: #b95454;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #9e4b4b;
+        }
+
+        .section {
+            margin-top: 20px;
+        }
+
+        .transaction-container, .winner-container {
+            height: 300px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            background-color: #fff;
+        }
+
+        .transaction, .winner {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .transaction:hover, .winner:hover {
+            transform: translateY(-5px);
+        }
+
+        .transaction-header, .winner-header {
+            font-weight: bold;
+            color: #b95454;
+            margin-bottom: 10px;
+        }
+
+        .transaction-row, .winner-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .transaction-label, .winner-label {
+            flex: 1;
+            font-weight: bold;
+            color: #b95454;
+        }
+
+        .transaction-value, .winner-value {
+            flex: 2;
+            color: #333;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
+    <script type="text/javascript" src="/js/adminDashboard.js">
+
+    </script>
+</head>
+<body>
+<h1>Welcome to Admin Dashboard!</h1>
+<div>
+    <div class="button-container">
+        <input type="text" id="text" placeholder="Slot 1 number"/>
+        <button id="sendText" onclick="sendMessage();">Send</button>
+    </div>
+    <br />
+
+    <div class="button-container">
+        <input type="text" id="text2" placeholder="Slot 2 number"/>
+        <button id="sendText2" onclick="sendMessage2();">Send</button>
+    </div>
+
+    <br />
+    <div id="messages"></div>
+
+    <div class="section">
+        <h2>Withdrawal Transactions</h2>
+        <div id="transactions" class="transaction-container"></div>
+    </div>
+
+    <div class="section">
+        <h2>Find Service</h2>
+        <form id="winnerForm">
+            <div class="form-group">
+                <label for="winner">Today's Number:</label>
+                <input type="text" id="winner" name="winner" required>
+            </div>
+            <div class="form-group">
+                <label for="slot">Slot:</label>
+                <input type="text" id="slot" name="slot" required>
+            </div>
+            <button type="submit">Fetch Details</button>
+        </form>
+        <div id="winners" class="winner-container"></div>
+    </div>
+
+</div>
+
+
+
+<footer>
+    <p>&copy; 2024 Arrow Enterprise. All rights reserved.</p>
+</footer>
+</body>
+</html>

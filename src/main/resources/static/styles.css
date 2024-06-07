@@ -1,0 +1,262 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box !important;
+}
+
+
+html, body{
+    height: 100%;
+    overflow-y: scroll;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+    width: 100%;
+    margin-top: 20;
+}
+
+body{
+  display: table;
+  width: 100%;
+  height: 100%;
+  background-color: #171717;
+  color: #000;
+  line-height: 1.6;
+  position: relative;
+  font-family: sans-serif;
+  overflow: auto;
+}
+
+.lines{
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  margin: auto;
+  width: 90vw;
+  
+
+}
+.line{
+  position: absolute;
+  width: 0.6px;
+  height: 100%;
+  top: 0;
+  left: 50%;
+  background: rgba(255, 255, 255, 0.1);
+
+  &::after{
+    content: '';
+    display: block;
+    position: absolute;
+    height: 10vh;
+    width: 100%;
+    top: -50%;
+    left: 0;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #ffffff 75%, #ffffff 100%);
+    animation: drop 7s 0s infinite;
+    animation-fill-mode: forwards;
+    animation-timing-function: cubic-bezier(0.4, 0.26, 0, 0.97);
+  }
+
+  &:nth-child(1){
+    margin-left: -25%;
+    &::after{
+      animation-delay: 2s;
+    }
+  }
+    
+  
+  &:nth-child(3){
+    margin-left: 25%;
+    &::after{
+      animation-delay: 2.5s;
+    }
+}
+    &:nth-child(5){
+        margin-left: -50%;
+        &::after{
+        animation-delay: 2.5s;
+        }
+    }
+    &:nth-child(7){
+        margin-left: 50%;
+        &::after{
+        animation-delay: 2.5s;
+        }
+    }
+}
+
+@keyframes drop{
+  0% {
+    top: 0%;
+  }
+  100%{
+    top: 110%;
+  }
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+ nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            display: inline-block;
+}
+nav a:hover{
+    background-color: aqua;
+}
+nav a:active {
+    color: aqua;
+    text-decoration: underline;
+
+}
+
+.hero {
+    display: none;
+    text-align: center;
+    padding: 70px;
+    position: relative;
+    color: aqua;
+    font-stretch: expanded;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 20px;
+    text-decoration: none;
+    background-color: #333;
+    color: #ffff;
+    border-radius: 6px;
+}
+
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    margin:0;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    position: fixed;
+    list-style: none;
+    justify-content: center;
+}
+.footer ul {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  .footer ul li {
+    display: inline;
+    margin-right: 10px;
+  }
+
+.footer-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.footer-links li {
+    margin: 5px 15px;
+    display: inline;
+}
+
+.footer-links a {
+    color: #00ffff;
+    text-decoration: none;
+}
+
+.footer-links a:hover, a:active {
+    text-decoration: underline;
+}
+
+.signup-section, .login-section {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 5px;
+}
+
+input {
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+button {
+    background-color: #b95454;
+    color: #fff;
+    padding: 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+}
+
+button:hover {
+    text-decoration: underline;
+}
+
+a {
+    color: #000;
+    text-decoration: underline;
+}
+
+.section {
+            display: none;
+            background: #fff;
+            padding: 20px;
+            margin-top: 30px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+#home-section {
+            display: block; /* Show Home section by default */
+        }
+
+.error {
+            color: red;
+        }
+p{
+    display: block;
+        margin: 10px 0;
+}
+
+.active {
+    color:aqua;
+    text-decoration: underline;
+}
