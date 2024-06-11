@@ -40,6 +40,11 @@ public class htmlControllers {
         return "deposit";
     }
 
+    @GetMapping("/paymentPage")
+    public String payPage(Model model) {
+        return "payment";
+    }
+
     @GetMapping("/withdraw")
     public String withdrawPage(Model model) {
         return "withdraw";

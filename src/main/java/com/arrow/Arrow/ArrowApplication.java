@@ -8,10 +8,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 
-@ComponentScan("com.teer")
+@ComponentScan("com.arrow")
 @SpringBootApplication
 @ServletComponentScan
-//@EnableJpaRepositories(basePackages = "com.teer.Teer.repository.UserRepository.java")
+//@EnableJpaRepositories(basePackages = "com.arrow.Arrow.repository.UserRepository.java")
 @EnableJpaRepositories(basePackageClasses = UserRepository.class)
 public class ArrowApplication {
 

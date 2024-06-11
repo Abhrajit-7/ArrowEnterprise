@@ -44,7 +44,6 @@ public class SecurityConfigTeer {
 
                         "numberselect.html**","numberselect.css**").permitAll()
                 .requestMatchers("/api/v1/members/**").hasAuthority("ADMIN")
-                .requestMatchers("/api/v1/members/{username}/**").access("@securityService.isUsernameEqualToAuthenticatedUser(#username)")
                 .requestMatchers("/api/v1/**","/transactions/**").authenticated()
                 .anyRequest()
                 .authenticated()

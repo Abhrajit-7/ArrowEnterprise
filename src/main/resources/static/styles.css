@@ -4,10 +4,14 @@
     box-sizing: border-box !important;
 }
 
-
+/*body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}*/
 html, body{
     height: 100%;
-    overflow-y: scroll;
 }
 
 header {
@@ -29,7 +33,7 @@ body{
   line-height: 1.6;
   position: relative;
   font-family: sans-serif;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .lines{
@@ -91,8 +95,13 @@ body{
         animation-delay: 2.5s;
         }
     }
+
+
+
 }
 
+
+    
 @keyframes drop{
   0% {
     top: 0%;
@@ -101,6 +110,11 @@ body{
     top: 110%;
   }
 }
+
+
+
+
+
 
 nav {
     display: flex;
@@ -117,23 +131,13 @@ nav ul li {
     margin: 0 15px;
 }
 
- nav a {
-            color: #fff;
-            text-decoration: none;
-            padding: 10px 20px;
-            display: inline-block;
-}
-nav a:hover{
-    background-color: aqua;
-}
-nav a:active {
-    color: aqua;
-    text-decoration: underline;
-
+nav a {
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
 }
 
 .hero {
-    display: none;
     text-align: center;
     padding: 70px;
     position: relative;
@@ -156,45 +160,9 @@ footer {
     color: #fff;
     text-align: center;
     padding: 10px;
-    margin:0;
     position: absolute;
     bottom: 0;
     width: 100%;
-    position: fixed;
-    list-style: none;
-    justify-content: center;
-}
-.footer ul {
-    list-style-type: none;
-    padding: 0;
-  }
-
-  .footer ul li {
-    display: inline;
-    margin-right: 10px;
-  }
-
-.footer-links {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.footer-links li {
-    margin: 5px 15px;
-    display: inline;
-}
-
-.footer-links a {
-    color: #00ffff;
-    text-decoration: none;
-}
-
-.footer-links a:hover, a:active {
-    text-decoration: underline;
 }
 
 .signup-section, .login-section {
@@ -229,34 +197,10 @@ button {
 }
 
 button:hover {
-    text-decoration: underline;
+    background-color: #944141;
 }
 
 a {
     color: #000;
-    text-decoration: underline;
-}
-
-.section {
-            display: none;
-            background: #fff;
-            padding: 20px;
-            margin-top: 30px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-#home-section {
-            display: block; /* Show Home section by default */
-        }
-
-.error {
-            color: red;
-        }
-p{
-    display: block;
-        margin: 10px 0;
-}
-
-.active {
-    color:aqua;
     text-decoration: underline;
 }
