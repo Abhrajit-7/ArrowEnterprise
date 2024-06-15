@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const containerContents = document.querySelectorAll('.slot-content');
 
     let currentSlotIndex = 0;
-
     /*if(!jwtToken){
         window.location.href='/login';
     }*/
