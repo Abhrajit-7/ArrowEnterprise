@@ -100,7 +100,12 @@
 		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
-			<version>4.2.0</version>
+			<version>4.2.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20210307</version>
 		</dependency>
 
 		<!-- Spring Boot Starter Websocket -->
@@ -120,9 +125,11 @@
 			<artifactId>httpclient</artifactId>
 			<version>4.5.14</version>
 		</dependency>
-
-
-
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.15</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

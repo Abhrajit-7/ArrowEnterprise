@@ -14,6 +14,7 @@ import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
 import com.arrow.Arrow.entity.Transaction;
 import com.arrow.Arrow.repository.TransactionsRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +23,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,17 +49,7 @@ public class TransactionService {
     @Transactional
     public Transaction depositByUsername(String username, double amount){
         User user=userRepository.findByUsername(username);
-        double currentBal=user.getAccountBalance();
-        double updatedBalance;
         if(user.getUsername()!=null){
-            if(currentBal == 0){
-                updatedBalance=amount;
-            }else {
-                updatedBalance = user.getAccountBalance() + amount;
-            }
-
-            //user.setAccountBalance(updatedBalance);
-            userRepository.save(user);
             // Create deposit transaction ..
             Transaction depositTransaction = new Transaction();
             depositTransaction.setUser(user);
@@ -72,7 +65,7 @@ public class TransactionService {
         }
     }
 
-    public void updateTransactionStatus(Long transactionId, String status, String username, double amount) {
+    public void updateTransactionStatus(String orderId, String username, double amount) {
         User user = userRepository.findByUsername(username);
         double currentBal = user.getAccountBalance();
         double updatedBalance;
@@ -81,15 +74,23 @@ public class TransactionService {
                 updatedBalance = amount;
             } else updatedBalance = user.getAccountBalance() + (amount);
 
-            //user.setAccountBalance(updatedBalance);
+            user.setAccountBalance(updatedBalance);
+            userRepository.save(user);
             // Retrieve transaction from the database using transactionId
-            Transaction transaction = transactionsRepository.findById(transactionId)
-                    .orElseThrow(() -> new RuntimeException("Transaction not found with id: " + transactionId));
+            Transaction transaction = transactionsRepository.findByOrderId(orderId)
+                    .orElseThrow(() -> new RuntimeException("Transaction not found with id: " + orderId));
+            logger.info("Transaction Details:{}", transaction);
+            logger.info("Txn amount: {} ", transaction.getAmount());
+            logger.info("Txn status:{}", transaction.getTransStatus());
+
+            //Later might be used
+            //String userName=transaction.getUser().getUsername();
 
             // Update transaction status
-            transaction.setTransStatus(TransStatus.valueOf(status));
+            transaction.setTransStatus(TransStatus.UPDATED);
             // Save updated transaction to the database
             transactionsRepository.save(transaction);
+            logger.info("Txn status updated:{}", transaction.getTransStatus());
             //logger.info(JSON.s(transactionsRepository.save(transaction)));
         }
     }
@@ -99,71 +100,95 @@ public class TransactionService {
     @Value(value = "${apiSecret}")
     private String apiSecret;
 
-    public String getRazorpayPaymentPageUrl(Long transactionId, double amount) {
+    public String getRazorpayPaymentPageUrl(Transaction transaction) {
 
-        logger.info(String.valueOf(transactionId),amount);
+        logger.info("Transaction DTO: {}", transaction );
         // Use Razorpay SDK to generate payment page URL
         try {
             // Initialize Razorpay client
             RazorpayClient razorpayClient = new RazorpayClient(apiKey, apiSecret);
             // Create payment options
             JSONObject orderRequest = new JSONObject();
-            orderRequest.put("amount", amount*100); // Amount in paise (100 paise = 1 INR)
+            orderRequest.put("amount", transaction.getAmount() * 100); // Amount in paise (100 paise = 1 INR)
             orderRequest.put("currency", "INR");
-            //orderRequest.put("receipt", "order_rcptid_11");
-            //orderRequest.put("upi",1);
-            Order order = razorpayClient.orders.create(orderRequest);
-            
-            //QrCode qrCode=razorpayClient.qrCode.create(orderRequest);
-            //return order.toString();
+            orderRequest.put("receipt", "txn_" + System.currentTimeMillis());
 
+            Order order = razorpayClient.orders.create(orderRequest);
+
+            logger.info("order is:"+ order);
+            String orderIdUpdate = order.get("id");
+            String orderId = order.toString();
+            logger.info("orderID is:"+ orderId);
+            transaction.setOrderId(orderIdUpdate);
+            transactionsRepository.save(transaction);
+            logger.info("Updated txn dto:{}",transaction);
             // Create Razorpay order
             // Get payment page URL from the order
-            String paymentPageUrl = order.toString();
-            //String paymentPageUrl = String.valueOf(qrCode);
-            logger.info("Razorpay request payload:" + paymentPageUrl);
-            return paymentPageUrl;
+            logger.info("Razorpay request payload:" + orderId);
+            // Return payment page URL
+            return orderId;
         } catch (RazorpayException e) {
             throw new RuntimeException(e);
         }
+    }
 
-        // Return the URL
+        public void handlePaymentSuccess(String orderId, String paymentId) {
+        Optional<Transaction> transactionOpt = transactionsRepository.findByOrderId(orderId);
+        if (transactionOpt.isPresent()) {
+            Transaction transaction = transactionOpt.get();
+            transaction.setPayment_id(paymentId);
+            transaction.setTransStatus(TransStatus.SUCCESS);
+            transactionsRepository.save(transaction);
+        }
+    }
+
+    public void handlePaymentFailure(String orderId) {
+        Optional<Transaction> transactionOpt = transactionsRepository.findByOrderId(orderId);
+        if (transactionOpt.isPresent()) {
+            Transaction transaction = transactionOpt.get();
+            transaction.setTransStatus(TransStatus.FAILED);
+            transactionsRepository.save(transaction);
+        }
+    }
+
+    @Value(value = "${razorpay.webhook.secret}")
+    private String webhookSecret;
+    public boolean verifyWebhookSignature(String payload, String razorpaySignature) {
+        try {
+            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+            SecretKeySpec secret_key = new SecretKeySpec(webhookSecret.getBytes(), "HmacSHA256");
+            sha256_HMAC.init(secret_key);
+            byte[] hash = sha256_HMAC.doFinal(payload.getBytes());
+            String calculatedSignature = Base64.getEncoder().encodeToString(hash);
+            return calculatedSignature.equals(razorpaySignature);
+        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Transactional
     public WithdrawDto withdrawByUsername(String username, double amount){
         logger.info("Request: {{},{}}", username,amount);
         User user=userRepository.findByUsername(username);
-        //Create withdrawal transaction
-        Transaction withdrawTransaction=new Transaction();
-        withdrawTransaction.setUser(user);
-        withdrawTransaction.setTransStatus(TransStatus.SUBMITTED);
-        withdrawTransaction.setTransactionType(TransactionType.WITHDRAW);
-        withdrawTransaction.setAmount(amount);
-        //withdrawTransaction.setTransactionTime();
-        Transaction savedTransaction=transactionsRepository.save(withdrawTransaction);
-
-
-        // Process withdrawal (deduct amount from user's balance)
-        if (user != null) {
-            //double withdrawalAmount = withdrawalRequest.getAmount();
-            if (userService.deductUserBalance(user.getUsername(), amount)) {
-                // Update transaction status to SUCCESS if deduction was successful
-                withdrawTransaction.setTransStatus(TransStatus.SUCCESS);
-                transactionsRepository.save(withdrawTransaction);
-                //return ResponseEntity.ok("Withdrawal request submitted successfully");
-            } else {
-                // If deduction failed, update transaction status to FAILED
-                withdrawTransaction.setTransStatus(TransStatus.FAILED);
-                transactionsRepository.save(withdrawTransaction);
-                //return ResponseEntity.badRequest().body("Insufficient balance");
-            }
-        } else {
+        Transaction withdrawTransaction = new Transaction();
+        if(user != null) {
+            //Create withdrawal transaction
+            withdrawTransaction.setUser(user);
+            withdrawTransaction.setTransStatus(TransStatus.SUBMITTED);
+            withdrawTransaction.setTransactionType(TransactionType.WITHDRAW);
+            withdrawTransaction.setAmount(amount);
+            userService.deductUserBalance(user.getUsername(), amount);
+            //withdrawTransaction.setTransactionTime();
+            transactionsRepository.save(withdrawTransaction);
+        }else {
             // Handle user not found scenario
             withdrawTransaction.setTransStatus(TransStatus.FAILED);
             transactionsRepository.save(withdrawTransaction);
+            throw new UserNotFoundException("User not found");
             //return ResponseEntity.badRequest().body("User not found");
         }
+
         UserProfile userProfile=profileRepository.findByUsername(user.getUsername());
         logger.info("Response: {{},{},{},{}}",userProfile.getFullName(),userProfile.getBankAccountNumber(), userProfile.getIfsc(),amount );
         return new WithdrawDto(
@@ -180,10 +205,22 @@ public class TransactionService {
 
     }
 
+    public void withdrawalConfirmation(Long trans_id, double amount){
+        Transaction transaction = transactionsRepository.findById(trans_id).orElseThrow(() -> new RuntimeException("Transaction not found with id: " + trans_id));
+        // Process withdrawal (deduct amount from user's balance)
+        if (transaction!=null && transaction.getAmount()==amount) {
+            //double withdrawalAmount = withdrawalRequest.getAmount();
+            transaction.setTransStatus(TransStatus.SUCCESS);
+            transactionsRepository.save(transaction);
+            //return ResponseEntity.ok("Withdrawal request submitted successfully");
+        } else {
+            throw new EntityNotFoundException("Transaction not present");
+        }
+    }
 
     public List<FetchTransactionsDTO> getTxnByUsername(String username){
         List<Transaction> fetch= userRepository.findByUsername(username).getTransactions();
-        List<FetchTransactionsDTO> fetchTransactionsList=fetch.stream()
+        return fetch.stream()
                 .sorted(Comparator.comparing(Transaction::getTransactionTime).reversed())
                 .map(transaction -> new FetchTransactionsDTO(
                         transaction.getTransaction_id(),
@@ -193,8 +230,6 @@ public class TransactionService {
                         transaction.getTransactionType()
                 ))
                 .collect(Collectors.toList());
-
-        return fetchTransactionsList;
     }
 
     public List<WithdrawDto> getWithdrawalRequests(){
@@ -213,6 +248,7 @@ public class TransactionService {
                     userProfile.getBankAccountNumber(),
                     userProfile.getIfsc(),
                     transaction.getAmount()
+
             );
             transactionDTOs.add(dto);
         }

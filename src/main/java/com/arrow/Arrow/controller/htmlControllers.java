@@ -57,10 +57,6 @@ public class htmlControllers {
 
     @GetMapping("/login")
     public String loginPage(@RequestParam (name = "logout", required = false) String logout) {
-        if(logout!=null) {
-
-            return "login";
-        }
         return "login";
     }
 
@@ -95,5 +91,10 @@ public class htmlControllers {
     @GetMapping("/api/v1/userDashboard")
     public String dashboard() {
         return "numberselect";
+    }
+
+    @GetMapping("/redirectToDashBoard")
+    public String redirectFromPayment() {
+        return "redirectPaymentPage";
     }
 }

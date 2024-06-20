@@ -131,11 +131,6 @@ nav ul li {
     margin: 0 15px;
 }
 
-nav a {
-    text-decoration: none;
-    color: #fff;
-    font-weight: bold;
-}
 
 .hero {
     text-align: center;
@@ -160,7 +155,7 @@ footer {
     color: #fff;
     text-align: center;
     padding: 10px;
-    position: absolute;
+    position: fixed;
     bottom: 0;
     width: 100%;
 }
@@ -200,7 +195,42 @@ button:hover {
     background-color: #944141;
 }
 
-a {
-    color: #000;
+nav a {
+    color: aqua;
+}
+nav a:hover{
+    background-color: aqua;
+    color: #333;
+}
+nav a:active{
     text-decoration: underline;
+}
+
+.footer-links {
+    list-style-type: none; /* Remove default list styling */
+    padding: 0; /* Remove default padding */
+    margin: 0; /* Remove default margin */
+    display: flex; /* Use flexbox to align items in a row */
+    width: 100%;
+    justify-content: space-between;
+}
+
+.footer-links li {
+    margin-right: 20px; /* Space between items */
+}
+
+.footer-links li:last-child {
+    margin-right: 0; /* Remove margin from the last item */
+}
+
+.footer-links a {
+    text-decoration: none; /* Remove underline from links */
+    color: aqua; /* Set link color */
+}
+
+.footer-links a:hover {
+    text-decoration: underline; /* Underline on hover */
+}
+.footer-links a:active {
+    text-decoration: underline; /* Underline when active */
 }

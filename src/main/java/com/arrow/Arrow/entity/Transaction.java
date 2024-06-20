@@ -21,12 +21,18 @@ public class Transaction {
     @Column(name = "transaction_id")
     private Long transaction_id;
 
+    @Column(name = "order_id")
+    private String orderId;
+
+    @Column(name = "payment_id")
+    private String payment_id;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "transaction_type")
     private TransactionType transactionType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "trans_status")
+    @Column(name = "trans_status", length = 30)
     private TransStatus transStatus;
 
     private double amount;

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting..</title>
+    <style>
+        button {
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    background-color: #b95454;
+}
+    </style>
+    <script>
+        (function () {
+            // Function to push a new state into the history
+            function preventBack() {
+                history.pushState(null, null, location.href);
+            }
+
+            // Call preventBack initially to push the current state
+            preventBack();
+
+            // Add event listener for popstate
+            window.addEventListener('popstate', function () {
+                preventBack(); // Push the state again to prevent back navigation
+            });
+
+            // Optionally, you can add an alert to notify the user
+            window.addEventListener('popstate', function (event) {
+                alert('Back navigation is disabled on this page.');
+            });
+
+        })();
+
+        function goToDashboard(){
+            window.location.href = '/api/v1/userDashboard';
+        }
+    </script>
+</head>
+<body>
+<h1>Payment is deposited</h1>
+<button onclick="goToDashboard()">Go to Dashboard</button>
+</body>
+</html>

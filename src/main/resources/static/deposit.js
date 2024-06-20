@@ -11,86 +11,68 @@ function submitDepositRequest() {
                 'Authorization': `Bearer ${jwtToken}`
             },
             body: JSON.stringify({
-            amount: amount,
-            username: username
-             })
+                amount: amount,
+                username: username
+            })
         })
         .then(response => {
             if (response.ok) {
-                // If request is successful, redirect user to Razorpay payment page
                 return response.json();
             } else {
                 throw new Error('Failed to submit deposit request');
             }
         })
-
         .then(data => {
-                    console.log(data);
-                    var orderRequest = {
-                        key: "rzp_test_jCudEyVaIv2x0H",
-                        "amount": data.amount,
-                        "currency": "INR",
-                        "name": "Arrow",
-                        "description": "Test payment",
-                        "order_id": data.id,
-                         config: {
-                            display: {
-                              blocks: {
-                                banks: {
-                                  name: 'Most Used Methods',
-                                  instruments: [
-                                    {
-                                      method: 'wallet',
-                                      wallets: ['freecharge']
-                                    },
-                                    {
-                                        method: 'app',
-                                        app: 'cred'
-                                    },
-                                    ],
-                                },
-                              },
-                              sequence: ['block.banks'],
-                              preferences: {
-                                show_default_blocks: false,
-                              },
-                            },
-
-                        },
-                        "handler": function (response){
-                            console.log(response);
-                            alert('Payment successful');
-                        },
-                        "modal": {
-                              "ondismiss": function () {
-                                if (confirm("Are you sure, you want to close the form?")) {
-                                  txt = "You pressed OK!";
-                                  console.log("Checkout form closed by the user");
-                                } else {
-                                  txt = "You pressed Cancel!";
-                                  console.log("Complete the Payment")
-                                }
-                              }
+            console.log(data);
+            var options = {
+                "key": "rzp_live_wmzBt6pdhvwbYB", // Replace with your Razorpay Key ID
+                "amount": amount * 100, // Convert to subunits
+                "currency": "INR",
+                "name": "Arrow",
+                "description": "Live payments",
+                "order_id": data.id, // This should be the order ID received from your backend
+                "handler": function (response){
+                    console.log(response);
+                    alert('Payment successful');
+                    var acctBal=sessionStorage.getItem('acctBal');
+                    var updatedBal=acctBal + amount;
+                    document.getElementById('balance').textContent = 'Rs.' + updatedBal.toFixed(2);
+                    sessionStorage.setItem('acctBal',updatedBal);
+                    window.location.href='/redirectToDashBoard';
+                    // Optionally, send the payment success response to your server
+                },
+                "prefill": {
+                    "name": username // Optional: Prefill user's name
+                },
+                "notes": {
+                    "address": "Razorpay Corporate Office"
+                },
+                "theme": {
+                    "color": "#F37254"
+                },
+                "modal": {
+                    "ondismiss": function () {
+                        if (confirm("Are you sure you want to close the form?")) {
+                            console.log("Checkout form closed by the user");
+                        } else {
+                            console.log("Complete the Payment");
                         }
-                    };
-                    var rzp = new Razorpay(orderRequest);
-                    rzp.on("payment.failed", function (response) {
-                    alert(response.error.code);
-                    alert(response.error.description);
-                    alert(response.error.source);
-                    alert(response.error.step);
-                    alert(response.error.reason);
-                    alert(response.error.metadata.order_id);
-                    alert(response.error.metadata.payment_id);
-          });
-                    rzp.open();
+                    }
+                }
+            };
+            var rzp = new Razorpay(options);
+            rzp.on("payment.failed", function (response) {
+                alert("Payment failed: " + response.error.description);
+                console.error(response.error);
+            });
+            rzp.open();
         })
-
-        /*.then(paymentPageUrl => {
-            window.location.href = paymentPageUrl;
-        })*/
         .catch(error => {
             console.error('Error:', error);
-            // Handle error - show error message to user or perform other actions
+            alert("Failed to submit deposit request.");
         });
-    }
+}
+
+function preventBack() {
+                history.pushState(null, null, location.href);
+            }

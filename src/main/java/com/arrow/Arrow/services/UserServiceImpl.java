@@ -98,7 +98,7 @@ public class UserServiceImpl{
         return membersDTO;
     }
 
-    public boolean deductUserBalance(String username, double withdrawalAmount) {
+    public void deductUserBalance(String username, double withdrawalAmount) {
         // Retrieve user from the database
         User user = userRepository.findByUsername(username);
 
@@ -107,8 +107,8 @@ public class UserServiceImpl{
             double newBalance = user.getAccountBalance() - withdrawalAmount;
             user.setAccountBalance(newBalance);
             userRepository.save(user);
-            return true; // Deduction successful
+            //return true; // Deduction successful
         }
-        return false; // Insufficient balance or user not found
+        //return false; // Insufficient balance or user not found
     }
 }
