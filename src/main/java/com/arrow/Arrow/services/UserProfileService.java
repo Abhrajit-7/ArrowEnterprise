@@ -22,7 +22,7 @@ public class UserProfileService {
     private ProfileRepository profileRepository;
     @Autowired
     private UserRepository userRepository;
-    Logger logger=LoggerFactory.getLogger(UserProfileService.class);
+    private Logger logger = LoggerFactory.getLogger(UserProfileService.class);
 
     @Autowired
     private ProfileMapper profileMapper;
@@ -39,29 +39,33 @@ public class UserProfileService {
     }
 
     @Transactional
-    public UserProfile createUserProfile(UserProfile userProfile, String username) {
+    public UserProfile createUserProfile(ProfileDTO userProfileDTO, String username) {
         User user = userRepository.findByUsername(username);
+
         if (user == null) {
             logger.error("User not found with username: {}", username);
             throw new UserNotFoundException("User not found with username: " + username);
         }
+
+        UserProfile userProfile = profileMapper.toEntity(userProfileDTO);
         userProfile.setUser(user);
-        logger.info("Creating profile for user: {}", userProfile);
+        logger.info("Creating profile for user: {}", username);
         return profileRepository.save(userProfile);
     }
 
     @CacheEvict(value = "profileCache", key = "#username")
     @Transactional
-    public ProfileDTO updateUserProfileByUsername(String username, UserProfile userProfile) {
+    public ProfileDTO updateUserProfileByUsername(String username, ProfileDTO userProfileDTO) {
         UserProfile existingProfile = profileRepository.findByUsername(username);
         if (existingProfile == null) {
             logger.info("No existing profile found for username: {}. Creating new profile.", username);
-            return profileMapper.toDTO(createUserProfile(userProfile, username));
+            return profileMapper.toDTO(createUserProfile(userProfileDTO, username));
         }
-        userProfile.setId(existingProfile.getId());
-        userProfile.setUser(existingProfile.getUser());
+
+        // Update the existing profile with details from the DTO
+        profileMapper.updateEntityFromDTO(userProfileDTO, existingProfile);
         logger.info("Updating profile for username: {}", username);
-        UserProfile updatedProfile = profileRepository.save(userProfile);
+        UserProfile updatedProfile = profileRepository.save(existingProfile);
         return profileMapper.toDTO(updatedProfile);
     }
 }

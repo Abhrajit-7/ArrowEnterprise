@@ -19,12 +19,12 @@ public class UserProfileController {
     }
 
     @PostMapping("/{username}")
-    public UserProfile createUserProfile(@RequestBody UserProfile userProfile, @PathVariable String username) {
+    public UserProfile createUserProfile(@RequestBody ProfileDTO userProfile, @PathVariable String username) {
         return userProfileService.createUserProfile(userProfile, username);
     }
 
     @PutMapping("/{username}")
-    public ProfileDTO updateUserProfileByUsername(@PathVariable String username, @RequestBody UserProfile userProfile) {
+    public ProfileDTO updateUserProfileByUsername(@PathVariable String username, @RequestBody ProfileDTO userProfile) {
         return userProfileService.updateUserProfileByUsername(username, userProfile);
     }
 }

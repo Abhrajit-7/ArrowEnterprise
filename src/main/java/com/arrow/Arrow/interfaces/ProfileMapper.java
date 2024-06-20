@@ -2,10 +2,15 @@ package com.arrow.Arrow.interfaces;
 
 import com.arrow.Arrow.dto.ProfileDTO;
 import com.arrow.Arrow.entity.UserProfile;
+import com.arrow.Arrow.repository.ProfileRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProfileMapper {
+
+    @Autowired
+    private ProfileRepository profileRepository;
     public ProfileDTO toDTO(UserProfile userProfile) {
         if (userProfile == null) {
             return null;
@@ -37,5 +42,19 @@ public class ProfileMapper {
         userProfile.setUsername(profileDTO.getUsername());
         return userProfile;
     }
+    public void updateEntityFromDTO(ProfileDTO profileDTO, UserProfile userProfile){
+        if (profileDTO == null || userProfile == null) {
+            return;
+        }
+        userProfile.setFullName(profileDTO.getFullName());
+        userProfile.setEmail(profileDTO.getEmail());
+        userProfile.setPhone(profileDTO.getPhone());
+        userProfile.setPan(profileDTO.getPan());
+        userProfile.setBankAccountNumber(profileDTO.getBankAccountNumber());
+        userProfile.setIfsc(profileDTO.getIfsc());
+        userProfile.setAadhaar(profileDTO.getAadhaar());
+        userProfile.setUsername(profileDTO.getUsername());
+    }
+
 }
 
