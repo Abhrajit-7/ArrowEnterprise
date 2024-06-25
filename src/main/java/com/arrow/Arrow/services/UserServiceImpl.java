@@ -7,6 +7,8 @@ import com.arrow.Arrow.dto.MembersDTO;
 import com.arrow.Arrow.dto.Role;
 import com.arrow.Arrow.dto.UserDTO;
 import com.arrow.Arrow.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,6 +26,8 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl{
 
+    Logger logger= LoggerFactory.getLogger(UserServiceImpl.class);
+
     @Autowired
     public UserRepository userRepository;
 
@@ -38,21 +42,22 @@ public class UserServiceImpl{
         User user=new User();
         User existingUser = userRepository.findByUsername(userDTO.getUsername());
         if (existingUser != null) {
+            logger.info("Already user present with this username");
             throw new DuplicateRequestException(user.getUsername());
-        }
+        }else {
+            user.setUsername(userDTO.getUsername());
+            user.setPassword(userDTO.getPassword());
+            //user.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
+            user.setEmail(userDTO.getEmail());
+            user.setRole(userDTO.getRole());
 
-        user.setUsername(userDTO.getUsername());
-        user.setPassword(userDTO.getPassword());
-        //user.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
-        user.setEmail(userDTO.getEmail());
-        user.setRole(userDTO.getRole());
-
-        if(userDTO.getParentId()!=null) {
-            User parent1 = userRepository.findById(userDTO.getParentId())
+            if (userDTO.getParentId() != null) {
+                User parent1 = userRepository.findById(userDTO.getParentId())
                         .orElseThrow(() -> new IllegalArgumentException("Invalid parent ID"));
-            user.setParent(parent1);
+                user.setParent(parent1);
+            }
+            return userRepository.save(user);
         }
-        return userRepository.save(user);
     }
 
     public User findUserByUsername(String username) throws UsernameNotFoundException {
@@ -99,12 +104,16 @@ public class UserServiceImpl{
     }
 
     public void deductUserBalance(String username, double withdrawalAmount) {
+        logger.info("Inside deductUserBalance method ");
         // Retrieve user from the database
         User user = userRepository.findByUsername(username);
+        logger.info("User is: {} , with balance: {}", user.getUsername(),user.getAccountBalance());
 
         // If user is found and has sufficient balance, deduct the withdrawal amount
-        if (user != null && user.getAccountBalance() >= withdrawalAmount) {
+        if (user.getAccountBalance() >= withdrawalAmount) {
+            logger.info("Second level balance check done ");
             double newBalance = user.getAccountBalance() - withdrawalAmount;
+            logger.info("Updated account balance : Rs. {}",newBalance);
             user.setAccountBalance(newBalance);
             userRepository.save(user);
             //return true; // Deduction successful

@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="styles.css">
     <title>Arrow Enterprise</title>
 </head>
+
 <div class="lines">
     <div class="line"></div>
     <div class="line"></div>
@@ -29,12 +30,14 @@
         </ul>
     </nav>
 </header>
+<div class="scrollable-content">
 <section id="home-section" class="hero">
     <h2>Welcome to Arrow Enterprise</h2>
 
     <a href="/signup" class="cta-button"> Sign up </a>
     <a href="/login" class="cta-button"> Login </a>
 </section>
+
 
 
 <section id="features-section" class="hero">
@@ -131,6 +134,8 @@
         <button type="submit">Send</button>
     </form>
 </section>
+
+</div>
 <footer>
     <ul class="footer-links">
 
@@ -143,21 +148,33 @@
 </footer>
 <script>
     const links = document.querySelectorAll('nav a, .footer-links a');
-    //const footerlinks=document.querySelectorAll('.footer-links a');
+        //const footerlinks = document.querySelectorAll('.footer-links a');
 
+        // Function to display corresponding section content
+        function displaySectionContent(targetSection) {
+            const sections = document.querySelectorAll('.hero');
+            sections.forEach(section => section.style.display = 'none');
+            targetSection.style.display = 'block';
+        }
 
-    //Function to display corresponding section content
-    function displaySectionContent(targetSection) {
-    const sections = document.querySelectorAll('.hero');
-    sections.forEach(section => section.style.display = 'none');
-    targetSection.style.display = 'block';
-}
-    function toggleActiveLink(links, clickedLink) {
-    links.forEach(link => link.classList.remove('active'));
-    clickedLink.classList.add('active');
-}
+        function toggleActiveLink(links, clickedLink) {
+            links.forEach(link => link.classList.remove('active-link'));
+            clickedLink.classList.add('active-link');
+        }
 
+        // Initialize page by showing only the home section
+        function initializePage() {
+            const sections = document.querySelectorAll('.hero');
+            sections.forEach(section => section.style.display = 'none');
+            const homeSection = document.getElementById('home-section');
+            homeSection.style.display = 'block';
 
+            // Set the home link as active
+            const homeLink = document.getElementById('home-link');
+            homeLink.classList.add('active-link');
+        }
+
+        // Add event listeners to links
         links.forEach(link => {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -167,17 +184,8 @@
             });
         });
 
-
-         footerlinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const targetSection = document.getElementById(this.id.replace('-link', '-section'));
-                displaySectionContent(targetSection);
-                toggleActiveLink(footerlinks, this);
-            });
-        });
-
-
+        // Initialize the page when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', initializePage);
 </script>
 
 </body>

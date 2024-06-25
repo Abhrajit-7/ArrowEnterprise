@@ -1,6 +1,6 @@
 package com.arrow.Arrow.controller;
 
-import com.arrow.Arrow.dto.CallBackDTO;
+import com.arrow.Arrow.dto.ConfirmationRequest;
 import com.arrow.Arrow.dto.FetchTransactionsDTO;
 import com.arrow.Arrow.dto.TxnDto;
 import com.arrow.Arrow.dto.WithdrawDto;
@@ -11,7 +11,6 @@ import com.arrow.Arrow.util.TransStatus;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.razorpay.RazorpayException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import static com.razorpay.Utils.verifySignature;
 
 @RestController
@@ -91,31 +87,19 @@ public class TransController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    @PostMapping("/razorpay/callback")
-    public ResponseEntity<?> handleRazorpayCallback(@RequestBody CallBackDTO callBack) {
-        // Retrieve transaction ID from callback
-
-        Long transactionId = callBack.getTransactionId();
-        // Retrieve payment status from callback
-        String paymentStatus = callBack.getPaymentStatus();
-        String username= callBack.getUsername();
-        double depositAmt= callBack.getAmount();
-        // Update transaction status based on payment status
-        transactionService.updateTransactionStatus(String.valueOf(transactionId), username, depositAmt);
-        return ResponseEntity.ok("Callback received successfully");
-    }
-
     @PostMapping("/withdrawPage")
     public  WithdrawDto withdraw(@RequestBody TxnDto txnDto){
         return transactionService.withdrawByUsername(txnDto.getUsername(),txnDto.getAmount());
     }
-
+    @PostMapping("/updateStatus")
+    public ResponseEntity<?> confirmWithdraw(@RequestBody ConfirmationRequest confirmationRequest){
+        transactionService.withdrawalConfirmation(confirmationRequest.getTrans_id(),confirmationRequest.getAmount());
+        return ResponseEntity.ok().build();
+    }
     @GetMapping("/withdrawals")
     public List<WithdrawDto> withdrawals(){
         return transactionService.getWithdrawalRequests();
     }
-
-
     @GetMapping("/{username}/fetchTransactions")
     public ResponseEntity<List<FetchTransactionsDTO>> getTxnByUsername(@PathVariable String username){
         List<FetchTransactionsDTO> transactions=transactionService.getTxnByUsername(username);

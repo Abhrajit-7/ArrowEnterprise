@@ -27,7 +27,7 @@ public class ProfileMapper {
         );
     }
 
-    public UserProfile toEntity(ProfileDTO profileDTO) {
+    public UserProfile toEntity(ProfileDTO profileDTO, String username) {
         if (profileDTO == null) {
             return null;
         }
@@ -39,7 +39,7 @@ public class ProfileMapper {
         userProfile.setBankAccountNumber(profileDTO.getBankAccountNumber());
         userProfile.setIfsc(profileDTO.getIfsc());
         userProfile.setAadhaar(profileDTO.getAadhaar());
-        userProfile.setUsername(profileDTO.getUsername());
+        userProfile.setUsername(username);
         return userProfile;
     }
     public void updateEntityFromDTO(ProfileDTO profileDTO, UserProfile userProfile){

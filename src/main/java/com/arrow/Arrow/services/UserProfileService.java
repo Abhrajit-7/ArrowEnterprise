@@ -7,6 +7,7 @@ import com.arrow.Arrow.entity.UserProfile;
 import com.arrow.Arrow.interfaces.ProfileMapper;
 import com.arrow.Arrow.repository.ProfileRepository;
 import com.arrow.Arrow.repository.UserRepository;
+import com.sun.jdi.request.DuplicateRequestException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -22,7 +23,7 @@ public class UserProfileService {
     private ProfileRepository profileRepository;
     @Autowired
     private UserRepository userRepository;
-    private Logger logger = LoggerFactory.getLogger(UserProfileService.class);
+    private final Logger logger = LoggerFactory.getLogger(UserProfileService.class);
 
     @Autowired
     private ProfileMapper profileMapper;
@@ -47,10 +48,18 @@ public class UserProfileService {
             throw new UserNotFoundException("User not found with username: " + username);
         }
 
-        UserProfile userProfile = profileMapper.toEntity(userProfileDTO);
-        userProfile.setUser(user);
-        logger.info("Creating profile for user: {}", username);
-        return profileRepository.save(userProfile);
+        UserProfile existingProfile=profileRepository.findByUsername(username);
+        if(existingProfile==null) {
+            UserProfile userProfile = profileMapper.toEntity(userProfileDTO,username);
+            userProfile.setUser(user);
+            userProfile.setUsername(username);
+            logger.info("Creating profile for user: {}", username);
+            profileRepository.save(userProfile);
+            return userProfile;
+        }else {
+            updateUserProfileByUsername(username,userProfileDTO);
+            throw new DuplicateRequestException("This profile is already present. Updating already existing one");
+        }
     }
 
     @CacheEvict(value = "profileCache", key = "#username")

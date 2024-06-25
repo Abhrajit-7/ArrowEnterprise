@@ -22,4 +22,5 @@ public class WithdrawDto {
     String bankAcctNumber;
     String ifscCode;
     double amount;
+    String aadhaar;
 }

@@ -11,6 +11,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -42,6 +43,7 @@ public class BetController {
     //To be used by admin
     public List<WinnerDTO> getUsernameBySelectedNumbers(@RequestParam("winner") String number, @RequestParam("slot") String slots) {
         //webSocketController.broadcastNumber(number); // Broadcast the number to clients via WebSocket
+        //LocalDateTime yesterday = LocalDateTime.now().minusDays(1).withHour(16).withMinute(0).withSecond(0).withNano(0);
         return betService.getUsernameBySelectedNumbers(number,slots);
     }
 

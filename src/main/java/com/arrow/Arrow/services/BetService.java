@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -126,12 +129,39 @@ public class BetService {
 
     public List<WinnerDTO> getUsernameBySelectedNumbers(String selectedNumber, String slots) {
         updateWinnerBalance(selectedNumber, slots);
-        return betRepository.findUsernamesBySelectedNumber(selectedNumber, slots);
+        LocalDateTime yesterday = LocalDateTime.now().minusDays(1).withHour(16).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime endTime = LocalDateTime.now();
+
+        // 4 PM of the previous day
+        LocalDateTime startTime = endTime.toLocalDate().atTime(LocalTime.of(16, 0)).minusDays(1);
+
+        // Format the times as needed for your query
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedStartTime = startTime.format(formatter);
+        String formattedEndTime = endTime.format(formatter);
+
+        System.out.println("Start Time: " + formattedStartTime);
+        System.out.println("End Time: " + formattedEndTime);
+        return betRepository.findUsernamesBySelectedNumber(selectedNumber, formattedStartTime, formattedEndTime, slots);
     }
 
     @Transactional
     public void updateWinnerBalance(String selectedNumber, String slots){
-        List<WinnerDTO> winnerList=betRepository.findUsernamesBySelectedNumber(selectedNumber, slots);
+        LocalDateTime yesterday = LocalDateTime.now().minusDays(1).withHour(16).withMinute(0).withSecond(0).withNano(0);
+        // Current time
+        LocalDateTime endTime = LocalDateTime.now();
+
+        // 4 PM of the previous day
+        LocalDateTime startTime = endTime.toLocalDate().atTime(LocalTime.of(16, 0)).minusDays(1);
+
+        // Format the times as needed for your query
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedStartTime = startTime.format(formatter);
+        String formattedEndTime = endTime.format(formatter);
+
+        System.out.println("Start Time: " + formattedStartTime);
+        System.out.println("End Time: " + formattedEndTime);
+        List<WinnerDTO> winnerList=betRepository.findUsernamesBySelectedNumber(selectedNumber, formattedStartTime,formattedEndTime ,slots);
         for(WinnerDTO winnerDTO: winnerList) {
             User user=userRepository.findByUsername(winnerDTO.getUsername());
             logger.info("User: {}",user.getUsername());

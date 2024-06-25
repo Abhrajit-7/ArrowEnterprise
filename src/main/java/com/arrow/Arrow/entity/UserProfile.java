@@ -1,5 +1,7 @@
 package com.arrow.Arrow.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.NotBlank;
@@ -42,5 +44,6 @@ public class UserProfile  {
 
     @OneToOne
     @JoinColumn(name = "username", referencedColumnName = "username", unique = true) // Join on the unique username column
+    @JsonManagedReference
     private User user;
 }

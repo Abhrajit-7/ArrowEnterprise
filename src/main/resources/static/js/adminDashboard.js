@@ -86,6 +86,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
                             transactionElement.appendChild(rowElement);
                         });
+                        // Confirm button
+                        const confirmButton = document.createElement('button');
+                        confirmButton.textContent = 'Confirm';
+                        confirmButton.classList.add('confirm-button');
+                        confirmButton.addEventListener('click', () => confirmTransaction(parseInt(transaction.trans_id, 10), parseFloat(transaction.amount, 10), transactionElement));
+                        transactionElement.appendChild(confirmButton);
 
                         transactionsDiv.appendChild(transactionElement);
                     });
@@ -111,6 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         winner: winner,
                         slot: slot
                     })
+
                 })
                 .then(response => response.json())
                 .then(winners => {
@@ -153,3 +160,44 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
         });
+function confirmTransaction(transactionId, amount, transactionElement) {
+    const confirmButton = transactionElement.querySelector('.confirm-button');
+    confirmButton.disabled = true;
+    confirmButton.textContent = 'Loading...';
+    console.log(transactionId);
+    console.log(amount);
+    fetch('http://arrowenterprise.co.in/transaction/updateStatus', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            trans_id: transactionId,
+            amount: amount
+        })
+    })
+    .then(response =>
+    {
+        if(response.ok){
+        // Assuming the backend returns a success message on confirmation
+        const statusRow = document.querySelector('.transaction-row .transaction-label[value="Status:"] + .transaction-value');
+        //const statusRow = transactionRows.find(row => row.label === 'Status:');
+        if (statusRow) {
+            // Update the value of 'Status:' to 'PAID'
+            statusRow.textContent = 'SUCCESS';
+        }
+        confirmButton.textContent = 'PAID';
+        confirmButton.classList.add('confirmed');
+        }else{
+            //return response.text().then(text => { throw new Error(text); });
+            // Handle non-OK responses
+            console.error('Error confirming transaction:', response.statusText);
+        }
+    })
+    .catch(error => {
+        console.error('Error confirming transaction:', error);
+        alert('Error confirming the transaction. Please try again later.');
+        confirmButton.textContent = 'Confirm';
+        confirmButton.disabled = false;
+    });
+}

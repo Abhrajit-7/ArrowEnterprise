@@ -90,7 +90,7 @@
                     initialPostDone = true;
                     renderProfile(data);
                 } else {
-                    /*profileData = {
+                    profileData = {
                         fullName: '',
                         email: '',
                         phone: '',
@@ -98,7 +98,7 @@
                         bankAccountNumber: '',
                         ifsc: '',
                         aadhaar: ''
-                    };*/
+                    };
                     renderEditForm(profileData);
                     document.getElementById('editForm').addEventListener('submit', handleFormSubmit);
                 }

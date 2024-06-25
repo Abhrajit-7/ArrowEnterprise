@@ -132,6 +132,32 @@
             flex: 2;
             color: #333;
         }
+        .confirm-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .confirm-button:hover {
+            background-color: #45a049;
+        }
+        .confirm-button:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+}
+
+.confirm-button.confirmed {
+    background-color: #28a745;
+    cursor: not-allowed;
+}
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>

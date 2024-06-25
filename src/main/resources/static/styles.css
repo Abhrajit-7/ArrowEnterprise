@@ -23,6 +23,11 @@ header {
     width: 100%;
     margin-top: 20;
 }
+.scrollable-content {
+    width: 100%; /* Fit to the width of the screen */
+    max-height: 80vh; /* Fit to the height of the screen */
+    overflow: auto; /* Enable vertical scrollbar if content exceeds container height */
+}
 
 body{
   display: table;
@@ -197,13 +202,14 @@ button:hover {
 
 nav a {
     color: aqua;
+    text-decoration: none;
 }
 nav a:hover{
     background-color: aqua;
     color: #333;
 }
-nav a:active{
-    text-decoration: underline;
+nav a:active-link{
+    text-decoration: none;
 }
 
 .footer-links {
@@ -231,6 +237,6 @@ nav a:active{
 .footer-links a:hover {
     text-decoration: underline; /* Underline on hover */
 }
-.footer-links a:active {
+.footer-links a:active-link {
     text-decoration: underline; /* Underline when active */
 }

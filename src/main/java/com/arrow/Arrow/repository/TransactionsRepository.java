@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface TransactionsRepository extends JpaRepository<Transaction, Long> {
-    List<Transaction> findByTransactionType(TransactionType transactionType);
+
+    List<Transaction> findByTransactionTypeOrderByTransactionTimeDesc(TransactionType transactionType);
     Optional<Transaction> findByOrderId(String order_id);
 }

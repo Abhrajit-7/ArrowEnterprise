@@ -14,7 +14,7 @@ public class UserProfileController {
     private UserProfileService userProfileService;
 
     @GetMapping("/{username}")
-    public Object getUserProfileByUsername(@PathVariable String username) {
+    public ProfileDTO getUserProfileByUsername(@PathVariable String username) {
         return userProfileService.getUserProfileByUsername(username);
     }
 

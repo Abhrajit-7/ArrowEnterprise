@@ -1,5 +1,6 @@
 package com.arrow.Arrow.services;
 
+import com.arrow.Arrow.ExceptionHandling.InsufficientBalanceException;
 import com.arrow.Arrow.ExceptionHandling.UserNotFoundException;
 import com.arrow.Arrow.dto.FetchTransactionsDTO;
 import com.arrow.Arrow.dto.WithdrawDto;
@@ -173,22 +174,34 @@ public class TransactionService {
         User user=userRepository.findByUsername(username);
         Transaction withdrawTransaction = new Transaction();
         if(user != null) {
-            //Create withdrawal transaction
+            logger.info("User validation passed. Inside try catch block -- withdrawByUsername method ");
             withdrawTransaction.setUser(user);
-            withdrawTransaction.setTransStatus(TransStatus.SUBMITTED);
             withdrawTransaction.setTransactionType(TransactionType.WITHDRAW);
             withdrawTransaction.setAmount(amount);
-            userService.deductUserBalance(user.getUsername(), amount);
-            //withdrawTransaction.setTransactionTime();
-            transactionsRepository.save(withdrawTransaction);
+            if (user.getAccountBalance() >= amount) {
+                try {
+                    logger.info("Account balance validation passed..");
+                    //Create withdrawal transaction
+                    withdrawTransaction.setTransStatus(TransStatus.SUBMITTED);
+                    logger.info("Txn status updated to SUBMITTED");
+                    userService.deductUserBalance(user.getUsername(), amount);
+                    //withdrawTransaction.setTransactionTime();
+                    transactionsRepository.save(withdrawTransaction);
+                } catch (InternalError e) {
+                    throw new InternalError(e.getMessage());
+                }
+            }else {
+                withdrawTransaction.setTransStatus(TransStatus.FAILED);
+                logger.info("Txn status updated to FAILED");
+                throw new InsufficientBalanceException("Not enough balance");
+            }
         }else {
             // Handle user not found scenario
             withdrawTransaction.setTransStatus(TransStatus.FAILED);
-            transactionsRepository.save(withdrawTransaction);
             throw new UserNotFoundException("User not found");
             //return ResponseEntity.badRequest().body("User not found");
         }
-
+        transactionsRepository.save(withdrawTransaction);
         UserProfile userProfile=profileRepository.findByUsername(user.getUsername());
         logger.info("Response: {{},{},{},{}}",userProfile.getFullName(),userProfile.getBankAccountNumber(), userProfile.getIfsc(),amount );
         return new WithdrawDto(
@@ -200,11 +213,11 @@ public class TransactionService {
                 userProfile.getPan(),
                 userProfile.getBankAccountNumber(),
                 userProfile.getIfsc(),
-                withdrawTransaction.getAmount()
+                withdrawTransaction.getAmount(),
+                userProfile.getAadhaar()
         );
 
     }
-
     public void withdrawalConfirmation(Long trans_id, double amount){
         Transaction transaction = transactionsRepository.findById(trans_id).orElseThrow(() -> new RuntimeException("Transaction not found with id: " + trans_id));
         // Process withdrawal (deduct amount from user's balance)
@@ -233,7 +246,7 @@ public class TransactionService {
     }
 
     public List<WithdrawDto> getWithdrawalRequests(){
-        List<Transaction> withdrawalTransactions = transactionsRepository.findByTransactionType(TransactionType.WITHDRAW);
+        List<Transaction> withdrawalTransactions = transactionsRepository.findByTransactionTypeOrderByTransactionTimeDesc(TransactionType.WITHDRAW);
         List<WithdrawDto> transactionDTOs = new ArrayList<>();
 
         for (Transaction transaction : withdrawalTransactions){
@@ -247,7 +260,8 @@ public class TransactionService {
                     userProfile.getPan(),
                     userProfile.getBankAccountNumber(),
                     userProfile.getIfsc(),
-                    transaction.getAmount()
+                    transaction.getAmount(),
+                    userProfile.getAadhaar()
 
             );
             transactionDTOs.add(dto);

@@ -24,8 +24,8 @@ public class TimeLimitFilter extends OncePerRequestFilter {
     // Static initialization block to define time ranges for different endpoints
     static {
         // Define time ranges for different endpoints
-        TIME_RANGES.put(createMapKey("/api/v1/teer/submit/slot1/{username}"), new TimeRange(LocalTime.of(15, 30), LocalTime.of(15, 45))); // Time range for endpoint1 (9:00 - 12:00)
-        TIME_RANGES.put(createMapKey("/api/v1/teer/submit/slot2/{username}"), new TimeRange(LocalTime.of(16, 45), LocalTime.of(17, 0))); // Time range for endpoint2 with path variable (13:00 - 17:00)
+        TIME_RANGES.put(createMapKey("/api/v1/teer/submit/slot1/{username}"), new TimeRange(LocalTime.of(15, 45), LocalTime.of(17, 0))); // Time range for endpoint1 (9:00 - 12:00)
+        TIME_RANGES.put(createMapKey("/api/v1/teer/submit/slot2/{username}"), new TimeRange(LocalTime.of(15, 45), LocalTime.of(17, 0))); // Time range for endpoint2 with path variable (13:00 - 17:00)
         // Add more mappings as needed
     }
 
