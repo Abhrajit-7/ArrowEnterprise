@@ -38,7 +38,7 @@ public class UserProfileService {
         logger.info("Profile found for username: {}", profile.getUsername());
         return profileMapper.toDTO(profile);
     }
-
+    @CacheEvict(value = "profileCache", key = "#username")
     @Transactional
     public UserProfile createUserProfile(ProfileDTO userProfileDTO, String username) {
         User user = userRepository.findByUsername(username);
@@ -52,7 +52,7 @@ public class UserProfileService {
         if(existingProfile==null) {
             UserProfile userProfile = profileMapper.toEntity(userProfileDTO,username);
             userProfile.setUser(user);
-            userProfile.setUsername(username);
+            //userProfile.setUsername(username);
             logger.info("Creating profile for user: {}", username);
             profileRepository.save(userProfile);
             return userProfile;

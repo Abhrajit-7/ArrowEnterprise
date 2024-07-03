@@ -10,13 +10,16 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class BetService {
@@ -129,11 +132,11 @@ public class BetService {
 
     public List<WinnerDTO> getUsernameBySelectedNumbers(String selectedNumber, String slots) {
         updateWinnerBalance(selectedNumber, slots);
-        LocalDateTime yesterday = LocalDateTime.now().minusDays(1).withHour(16).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime startTime = LocalDateTime.now().minusDays(1).withHour(16).withMinute(0).withSecond(0).withNano(0);
         LocalDateTime endTime = LocalDateTime.now();
 
         // 4 PM of the previous day
-        LocalDateTime startTime = endTime.toLocalDate().atTime(LocalTime.of(16, 0)).minusDays(1);
+        //LocalDateTime startTime = endTime.toLocalDate().atTime(LocalTime.of(16, 0)).minusDays(1);
 
         // Format the times as needed for your query
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -142,26 +145,22 @@ public class BetService {
 
         System.out.println("Start Time: " + formattedStartTime);
         System.out.println("End Time: " + formattedEndTime);
-        return betRepository.findUsernamesBySelectedNumber(selectedNumber, formattedStartTime, formattedEndTime, slots);
+
+        System.out.println("Start Time: " + startTime);
+        System.out.println("End Time: " + endTime);
+        return betRepository.findUsernamesBySelectedNumber(selectedNumber, startTime, endTime, slots);
     }
 
     @Transactional
     public void updateWinnerBalance(String selectedNumber, String slots){
-        LocalDateTime yesterday = LocalDateTime.now().minusDays(1).withHour(16).withMinute(0).withSecond(0).withNano(0);
+        //Start time
+        LocalDateTime startTime = LocalDateTime.now().minusDays(1).withHour(16).withMinute(0).withSecond(0).withNano(0);
         // Current time
         LocalDateTime endTime = LocalDateTime.now();
 
-        // 4 PM of the previous day
-        LocalDateTime startTime = endTime.toLocalDate().atTime(LocalTime.of(16, 0)).minusDays(1);
-
-        // Format the times as needed for your query
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String formattedStartTime = startTime.format(formatter);
-        String formattedEndTime = endTime.format(formatter);
-
-        System.out.println("Start Time: " + formattedStartTime);
-        System.out.println("End Time: " + formattedEndTime);
-        List<WinnerDTO> winnerList=betRepository.findUsernamesBySelectedNumber(selectedNumber, formattedStartTime,formattedEndTime ,slots);
+        System.out.println("Start Time: " + startTime);
+        System.out.println("End Time: " + endTime);
+        List<WinnerDTO> winnerList=betRepository.findUsernamesBySelectedNumber(selectedNumber, startTime,endTime ,slots);
         for(WinnerDTO winnerDTO: winnerList) {
             User user=userRepository.findByUsername(winnerDTO.getUsername());
             logger.info("User: {}",user.getUsername());
@@ -171,15 +170,30 @@ public class BetService {
 
             double betAmount = winnerDTO.getTotalInvested(); // Assuming this retrieves the total bet amount for the user
             logger.info("Total invested Balance: {}",betAmount);
-            double updatedBalance = currentBalance + (betAmount * 80);
+            double updatedBalance=0;
+            if(Objects.equals(slots, "Slot-1")) {
+                 updatedBalance = currentBalance + (betAmount * 80);
+            } else if(Objects.equals(slots, "Slot-2")) {
+                 updatedBalance = currentBalance + (betAmount * 60);
+            }
             logger.info("Updated Balance: {}",updatedBalance);
-
             user.setAccountBalance(updatedBalance);
-            logger.debug("User account balannce is updated to : {}",updatedBalance);
+            logger.debug("User account balance is updated to : {}",updatedBalance);
             //user.setAccountBalance(winnerAmount);
             //Need to work on it
             //user.setAccountBalance(user.getAccountBalance()+winnerAmount);
             userRepository.save(user);
         }
+    }
+
+    public List<List<String>> getLatestRecords() {
+        Pageable pageable = PageRequest.of(0, 10);
+        return betRepository.findLatestBets(pageable).getContent().stream()
+                .map(bet -> List.of(
+                        "ID: " + bet.getId(),
+                        "Numbers: " + bet.getSelected_numbers(),
+                        "Amount: " + bet.getBet_amount()
+                ))
+                .collect(Collectors.toList());
     }
 }

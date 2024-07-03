@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const data = {
                         bet_number: bet_number,
                         selected_numbers: selectedNumbers.toString(),
-                        bet_amount: betAmount,
+                        bet_amount: totalAmount,
                         username: username,
                         slot: "Slot-"+(currentSlotIndex+1)
                     };
@@ -158,21 +158,34 @@ document.addEventListener('DOMContentLoaded', () => {
         if(onLoadData !== null){
         renderData(onLoadData, currentSlotIndex+1);
         }
+        getList('1');
     };
 
-       // Function to add a new entry
+    function getList(slot){
+        fetch('http://arrowenterprise.co.in/api/v1/lists')
+        .then(response => response.json())
+        .then(data => {
+            // Store data in localStorage
+            localStorage.setItem('cachedData1', JSON.stringify(data));
+            // Render data to the UI
+            renderData(data, slot);
+        })
+        .catch(error => console.error('Error fetching data:', error));
+        });
+    }
+
+    // Function to add a new entry
     function addNewEntry(newEntry, slotName) {
         console.log('Slot: ', slotName);
         // Update client-side cache (localStorage) with new entry
-        let cachedData = JSON.parse(localStorage.getItem('cachedData'+slotName)) || [];
+        let cachedData = JSON.parse(localStorage.getItem('cachedData' + slotName)) || [];
         console.log('Cached Data:', cachedData);
         cachedData.push(newEntry);
-        localStorage.setItem('cachedData'+slotName, JSON.stringify(cachedData));
+        localStorage.setItem('cachedData' + slotName, JSON.stringify(cachedData));
         renderData(cachedData, slotName); // Update UI with new entry
-
     }
 
-       // Function to render data to the UI
+    // Function to render data to the UI
     function renderData(data, slotName) {
         const dataList = document.getElementById(`data-container-slot-${slotName}`);
         dataList.innerHTML = ''; // Clear previous content

@@ -11,7 +11,6 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -46,6 +45,12 @@ public class BetController {
         //LocalDateTime yesterday = LocalDateTime.now().minusDays(1).withHour(16).withMinute(0).withSecond(0).withNano(0);
         return betService.getUsernameBySelectedNumbers(number,slots);
     }
+
+    @GetMapping("/lists")
+    public List<List<String>> getList(){
+        return betService.getLatestRecords();
+    }
+
 
     @Autowired
     SimpMessagingTemplate simpMessagingTemplate;

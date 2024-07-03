@@ -8,6 +8,7 @@ import com.arrow.Arrow.entity.User;
 import com.arrow.Arrow.services.UserServiceImpl;
 import com.arrow.Arrow.component.JwtTokenUtil;
 import com.arrow.Arrow.dto.*;
+import com.sun.jdi.request.DuplicateRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +41,13 @@ public class UserController {
     private JwtTokenUtil helper;
 
     @PostMapping("/register")
-    public ResponseEntity<User> createUser(@RequestBody UserDTO userDTO) {
-        User user = userServiceImpl.createUser(userDTO);
-        return ResponseEntity.ok(user);
+    public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO) {
+        try{
+            User newUser = userServiceImpl.createUser(userDTO);
+            return ResponseEntity.ok(newUser);
+        }catch (DuplicateRequestException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/members/{username}/showTree")

@@ -10,6 +10,9 @@ document.getElementById('signup-section').addEventListener('submit', function (e
     const role = document.getElementById('role').value;
     const usernamePattern = /^[a-zA-Z0-9!@#\$%\^\&*\)\(+=._-]+$/;
 
+    const usernameInput = document.getElementById('username');
+    const usernameMessage = document.getElementById('usernameError');
+
     if (!usernamePattern.test(username)) {
             errorElement.textContent = 'Invalid username. No spaces allowed';
         } else {
@@ -32,50 +35,28 @@ document.getElementById('signup-section').addEventListener('submit', function (e
       }),
     })
     .then(response => {
-        return response.json();
+        if (response.ok) {
+            usernameInput.classList.remove('input-error');
+            usernameInput.classList.add('input-success');
+            usernameMessage.textContent = 'Username is available.';
+            usernameMessage.style.color = 'green';
+            //message.textContent = 'User created successfully.';
+            //message.style.color = 'green';
+            alert(`Hi, ${response.username}! Welcome to Arrow Enterprise :D`);
+            window.location.href='/login';
+        } else {
+            usernameInput.classList.remove('input-success');
+            usernameInput.classList.add('input-error');
+            usernameMessage.textContent = 'User already present';
+            usernameMessage.style.color = 'red';
+            //message.textContent = '';
+        }
     })
-    .then(data => {
-        alert("Hi, "+ data.username+". Welcome to Arrow Enterprise :D")
-        window.location.href='/login';
-    })
-    .catch(error => {
-      console.error('Error:', error);
+    .catch (error => {
+            usernameInput.classList.remove('input-success');
+            usernameInput.classList.add('input-error');
+            usernameMessage.textContent = 'An error occurred: ' + error.message;
+            usernameMessage.style.color = 'red';
+            //message.textContent = '';
     });
   });
-  
-  document.getElementById('login-section').addEventListener('submit', function (event) {
-    event.preventDefault();
-  
-    const loginUsername = document.getElementById('loginUsername').value;
-    const loginPassword = document.getElementById('loginPassword').value;
-  
-
-    try {
-       fetch('/login', {
-             method: 'POST',
-             headers: {
-               'Content-Type': 'application/json',
-             },
-             body: JSON.stringify({
-               username: loginUsername,
-               password: loginPassword,
-             }),
-           })
-
-       .then(response => response.json())
-       .then(data => {
-             console.log(data.message);
-             window.location.href = '/userdashboard.html';
-       })
-
-      if (!response.ok) {
-      throw new Error(data.message || 'Failed to login');
-      }
-      localStorage.setItem('token', data.token); // Store token in localStorage
-      window.location.href = 'userdashboard.html'; // Redirect to dashboard page after successful login
-    } catch (error) {
-      document.getElementById('message').textContent = error.message;
-    }
-
-  });
-  

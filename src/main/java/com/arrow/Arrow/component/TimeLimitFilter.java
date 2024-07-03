@@ -16,7 +16,7 @@ import java.util.Map;
 @WebFilter(urlPatterns = {"/api/v1/teer/restrictedEndpoints/*"}) // Specify the common URL pattern for the filter// Order of the filter
 public class TimeLimitFilter extends OncePerRequestFilter {
 
-    Logger logger= LoggerFactory.getLogger(TimeLimitFilter.class);
+    Logger logger = LoggerFactory.getLogger(TimeLimitFilter.class);
     // Map to store time limits for different endpoints
     private static final Map<String, TimeRange> TIME_RANGES = new HashMap<>();
     private static final String PATH_VARIABLE_PLACEHOLDER = "{username}";
@@ -24,15 +24,13 @@ public class TimeLimitFilter extends OncePerRequestFilter {
     // Static initialization block to define time ranges for different endpoints
     static {
         // Define time ranges for different endpoints
-        TIME_RANGES.put(createMapKey("/api/v1/teer/submit/slot1/{username}"), new TimeRange(LocalTime.of(15, 45), LocalTime.of(17, 0))); // Time range for endpoint1 (9:00 - 12:00)
-        TIME_RANGES.put(createMapKey("/api/v1/teer/submit/slot2/{username}"), new TimeRange(LocalTime.of(15, 45), LocalTime.of(17, 0))); // Time range for endpoint2 with path variable (13:00 - 17:00)
+        TIME_RANGES.put(createMapKey("/api/v1/teer/submit/slot1/{username}"), new TimeRange(LocalTime.of(15, 55), LocalTime.of(17, 5)));
+        TIME_RANGES.put(createMapKey("/api/v1/teer/submit/slot2/{username}"), new TimeRange(LocalTime.of(0, 0, 1), LocalTime.of(23, 59, 59)));
         // Add more mappings as needed
     }
-
     private static String createMapKey(String endpoint) {
         return endpoint.replaceAll("\\{[^}]*\\}", PATH_VARIABLE_PLACEHOLDER);
     }
-
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         //In case you want to do by matcher use matcher
@@ -41,7 +39,6 @@ public class TimeLimitFilter extends OncePerRequestFilter {
         return !path.startsWith("/api/v1/teer/restrictedEndpoints/");
         //return matcher.matches(request);
     }
-
     @Override
     protected void doFilterInternal(jakarta.servlet.http.HttpServletRequest request, jakarta.servlet.http.HttpServletResponse response, jakarta.servlet.FilterChain filterChain) throws jakarta.servlet.ServletException, IOException {
 
@@ -74,7 +71,6 @@ public class TimeLimitFilter extends OncePerRequestFilter {
         // If the URL is not found in the map or if the current time falls within the time range, proceed with the request
         filterChain.doFilter(request, response);
     }
-
     // Inner class to represent a time range
     private static class TimeRange {
         private final LocalTime startTime;

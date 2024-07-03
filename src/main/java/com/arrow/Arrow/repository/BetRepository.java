@@ -2,6 +2,8 @@ package com.arrow.Arrow.repository;
 
 import com.arrow.Arrow.dto.WinnerDTO;
 import com.arrow.Arrow.entity.Bet;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,13 +21,15 @@ public interface BetRepository extends JpaRepository<Bet, Long> {
             "JOIN User ad " +
             "ON b.user.username = ad.username " +
             "WHERE b.slot = :slots " +
-            "AND b.bet_time >= :start_time "+
+            "AND b.bet_time >= :start_time " +
             "AND b.bet_time <= :end_time " +
-            "AND FUNCTION('HOUR', b.bet_time) >= 16 " +
             "AND CAST(FIND_IN_SET(:selected_numbers, REPLACE(b.selected_numbers, ' ', '')) AS int) > 0 " +
             "group by ad.username")
-    List<WinnerDTO> findUsernamesBySelectedNumber(@Param("selected_numbers") String selected_numbers, @Param("start_time") String start_time, @Param("end_time") String end_time,@Param("slots") String slots);
+    List<WinnerDTO> findUsernamesBySelectedNumber(@Param("selected_numbers") String selected_numbers, @Param("start_time") LocalDateTime start_time, @Param("end_time") LocalDateTime end_time,@Param("slots") String slots);
 
     // Below is the query for fetching the total amount invested by user:
     //SELECT ad.username, sum(b.bet_amount) as total_invested, :selectedNumber FROM bets_details b JOIN Account_Details ad ON b.username = ad.username WHERE FIND_IN_SET(:selectedNumber, REPLACE(b.selected_numbers, ' ', '')) > 0 group by ad.username;
+
+    @Query(value = "SELECT b.betId, b.selectedNumbers, b.betAmount FROM BetsDetails b ORDER BY b.betTime DESC")
+    Page<Bet> findLatestBets(Pageable pageable);
 }

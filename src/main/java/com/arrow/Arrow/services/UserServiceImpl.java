@@ -32,19 +32,16 @@ public class UserServiceImpl{
     public UserRepository userRepository;
 
     @Autowired
-    private UserServiceImpl userService;
-
-    @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public User createUser(UserDTO userDTO) {
-
-        User user=new User();
-        User existingUser = userRepository.findByUsername(userDTO.getUsername());
-        if (existingUser != null) {
+        User existingUserName = userRepository.findByUsername(userDTO.getUsername());
+        if (existingUserName != null) {
             logger.info("Already user present with this username");
-            throw new DuplicateRequestException(user.getUsername());
+            throw new DuplicateRequestException("Username already exists: " + userDTO.getUsername());
+            //return existingUserName;
         }else {
+            User user=new User();
             user.setUsername(userDTO.getUsername());
             user.setPassword(userDTO.getPassword());
             //user.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
