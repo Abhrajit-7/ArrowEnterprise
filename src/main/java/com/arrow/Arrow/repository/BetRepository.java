@@ -30,6 +30,6 @@ public interface BetRepository extends JpaRepository<Bet, Long> {
     // Below is the query for fetching the total amount invested by user:
     //SELECT ad.username, sum(b.bet_amount) as total_invested, :selectedNumber FROM bets_details b JOIN Account_Details ad ON b.username = ad.username WHERE FIND_IN_SET(:selectedNumber, REPLACE(b.selected_numbers, ' ', '')) > 0 group by ad.username;
 
-    @Query(value = "SELECT b.betId, b.selectedNumbers, b.betAmount FROM BetsDetails b ORDER BY b.betTime DESC")
-    Page<Bet> findLatestBets(Pageable pageable);
+    @Query(value = "SELECT b.id, b.selected_numbers, b.bet_amount FROM Bet b ORDER BY b.bet_time DESC")
+    Page<Bet> findLatestBet(Pageable pageable);
 }

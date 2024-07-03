@@ -188,7 +188,7 @@ public class BetService {
 
     public List<List<String>> getLatestRecords() {
         Pageable pageable = PageRequest.of(0, 10);
-        return betRepository.findLatestBets(pageable).getContent().stream()
+        return betRepository.findLatestBet(pageable).getContent().stream()
                 .map(bet -> List.of(
                         "ID: " + bet.getId(),
                         "Numbers: " + bet.getSelected_numbers(),
