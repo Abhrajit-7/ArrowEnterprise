@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-@WebFilter(urlPatterns = {"/api/v1/teer/restrictedEndpoints/*"}) // Specify the common URL pattern for the filter// Order of the filter
+@WebFilter(urlPatterns = {"/api/v1/teer/submit/*"}) // Specify the common URL pattern for the filter// Order of the filter
 public class TimeLimitFilter extends OncePerRequestFilter {
 
     Logger logger = LoggerFactory.getLogger(TimeLimitFilter.class);
@@ -24,8 +24,8 @@ public class TimeLimitFilter extends OncePerRequestFilter {
     // Static initialization block to define time ranges for different endpoints
     static {
         // Define time ranges for different endpoints
-        TIME_RANGES.put(createMapKey("/api/v1/teer/submit/slot1/{username}"), new TimeRange(LocalTime.of(15, 55), LocalTime.of(17, 5)));
-        TIME_RANGES.put(createMapKey("/api/v1/teer/submit/slot2/{username}"), new TimeRange(LocalTime.of(0, 0, 1), LocalTime.of(23, 59, 59)));
+        TIME_RANGES.put(createMapKey("/api/v1/teer/submit/slot1/{username}"), new TimeRange(LocalTime.of(15, 55), LocalTime.of(17, 30)));
+        TIME_RANGES.put(createMapKey("/api/v1/teer/submit/slot2/{username}"), new TimeRange(LocalTime.of(16, 40), LocalTime.of(17, 30)));
         // Add more mappings as needed
     }
     private static String createMapKey(String endpoint) {
@@ -36,7 +36,7 @@ public class TimeLimitFilter extends OncePerRequestFilter {
         //In case you want to do by matcher use matcher
         //RequestMatcher matcher = new NegatedRequestMatcher(uriMatcher);
         String path = request.getServletPath();
-        return !path.startsWith("/api/v1/teer/restrictedEndpoints/");
+        return !path.startsWith("/api/v1/teer/submit/");
         //return matcher.matches(request);
     }
     @Override

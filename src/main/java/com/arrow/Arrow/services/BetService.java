@@ -45,7 +45,7 @@ public class BetService {
         double currentBal=user.getAccountBalance();
         logger.info("Updated bal "+ currentBal);
         // Updating balance subtracting the number by the selected amount
-        double updatedBal=currentBal - bet_amount;
+        double updatedBal=currentBal - (bet_amount*betsDTO.getNumberCount());
         logger.info("Updated bal "+ updatedBal);
         // Saving the updated balance in the account_details DB
         user.setAccountBalance(updatedBal);
@@ -76,7 +76,7 @@ public class BetService {
         }
 
         //Send back the BetID, Numbers and the corresponding amount
-        List<String> responseList = List.of( "ID: " + bet.getBet_number() ,"Numbers: " + bet.getSelected_numbers().toString(), "Amount: " + bet.getBet_amount());
+        List<String> responseList = List.of( "ID: " + bet.getBet_number() ,"Numbers: " + bet.getSelected_numbers(), "Amount: " + bet.getBet_amount());
         logger.info("Response: {}" ,responseList);
         return responseList;
     }
@@ -124,12 +124,6 @@ public class BetService {
             throw  new EntityNotFoundException("Account not found for username: " + username);
         }
     }
-
-    private void updateAccountBalance(User userAccount, double amount) {
-        userAccount.setAccountBalance(userAccount.getAccountBalance()-amount);
-        userRepository.save(userAccount);
-    }
-
     public List<WinnerDTO> getUsernameBySelectedNumbers(String selectedNumber, String slots) {
         updateWinnerBalance(selectedNumber, slots);
         LocalDateTime startTime = LocalDateTime.now().minusDays(1).withHour(16).withMinute(0).withSecond(0).withNano(0);
@@ -186,13 +180,14 @@ public class BetService {
         }
     }
 
-    public List<List<String>> getLatestRecords() {
+    public List<List<String>> getLatestRecords(String username, String slot) {
+        logger.info("Inside getLatestRecords service method");
         Pageable pageable = PageRequest.of(0, 10);
-        return betRepository.findLatestBet(pageable).getContent().stream()
+        return betRepository.findLatestBet(pageable, username, slot).getContent().stream()
                 .map(bet -> List.of(
                         "ID: " + bet.getId(),
                         "Numbers: " + bet.getSelected_numbers(),
-                        "Amount: " + bet.getBet_amount()
+                        "Amount: " + bet.getAmount()
                 ))
                 .collect(Collectors.toList());
     }

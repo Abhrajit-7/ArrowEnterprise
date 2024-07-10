@@ -83,7 +83,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     const data = {
                         bet_number: bet_number,
                         selected_numbers: selectedNumbers.toString(),
-                        bet_amount: totalAmount,
+                        bet_amount: betAmount,
+                        numberCount: selectedNumbers.length,
                         username: username,
                         slot: "Slot-"+(currentSlotIndex+1)
                     };
@@ -162,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function getList(slot){
-        fetch('http://arrowenterprise.co.in/api/v1/lists')
+        fetch('http://arrowenterprise.co.in/api/v1/teer/lists/'+ username +'?slot=Slot-'+slot)
         .then(response => response.json())
         .then(data => {
             // Store data in localStorage
@@ -171,7 +172,6 @@ document.addEventListener('DOMContentLoaded', () => {
             renderData(data, slot);
         })
         .catch(error => console.error('Error fetching data:', error));
-        });
     }
 
     // Function to add a new entry
@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (selectedContainer) {
             selectedContainer.style.display = 'block';
             // Fetch and render data for the selected slot
-            //fetchData(currentSlot);
+            getList(currentSlot);
         }
     }
 
@@ -306,52 +306,3 @@ stompClient.connect({}, function(frame) {
         showMessage(JSON.parse(result2.body));
     });
 });
-
-
-/*
-//The WINNER PROMPT// -- Can use Later for other things
-// Function to display message in modal dialog
-function showMessage(message) {
-    var messageContent = document.getElementById('messageContent');
-    messageContent.innerHTML = message.text;
-
-    // Show the modal dialog
-    $('#messageModal').modal('show');
-
-    // Add congratulatory animation class to the message
-    messageContent.classList.add('congratulatory');
-
-    // Add blast unbox animation class to the modal body
-    messageContent.classList.add('blast-unbox');
-
-    // Create confetti pieces
-    var confettiContainer = document.querySelector('.confetti-container');
-    for (var i = 0; i < 100; i++) {
-        var confettiPiece = document.createElement('div');
-        confettiPiece.classList.add('confetti-piece');
-        confettiPiece.style.left = Math.random() * 100 + '%';
-        confettiPiece.style.backgroundColor = randomColor();
-        confettiPiece.style.animationDelay = Math.random() * 2 + 's';
-        confettiContainer.appendChild(confettiPiece);
-    }
-
-    // Remove confetti after animation
-    setTimeout(function() {
-        confettiContainer.innerHTML = ''; // Clear confetti pieces
-    }, 5000); // Adjust duration as needed
-
-    // Store the number in local storage
-    localStorage.setItem('winningNumber', message.text);
-}
-
-// Function to generate random color
-function randomColor() {
-    var letters = '0123456789ABCDEF';
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}*/
-
-

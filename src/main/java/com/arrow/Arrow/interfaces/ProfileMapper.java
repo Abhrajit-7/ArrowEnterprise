@@ -2,15 +2,11 @@ package com.arrow.Arrow.interfaces;
 
 import com.arrow.Arrow.dto.ProfileDTO;
 import com.arrow.Arrow.entity.UserProfile;
-import com.arrow.Arrow.repository.ProfileRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProfileMapper {
 
-    @Autowired
-    private ProfileRepository profileRepository;
     public ProfileDTO toDTO(UserProfile userProfile) {
         if (userProfile == null) {
             return null;

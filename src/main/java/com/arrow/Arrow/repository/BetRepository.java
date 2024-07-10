@@ -1,5 +1,6 @@
 package com.arrow.Arrow.repository;
 
+import com.arrow.Arrow.dto.BetListDTO;
 import com.arrow.Arrow.dto.WinnerDTO;
 import com.arrow.Arrow.entity.Bet;
 import org.springframework.data.domain.Page;
@@ -28,8 +29,8 @@ public interface BetRepository extends JpaRepository<Bet, Long> {
     List<WinnerDTO> findUsernamesBySelectedNumber(@Param("selected_numbers") String selected_numbers, @Param("start_time") LocalDateTime start_time, @Param("end_time") LocalDateTime end_time,@Param("slots") String slots);
 
     // Below is the query for fetching the total amount invested by user:
-    //SELECT ad.username, sum(b.bet_amount) as total_invested, :selectedNumber FROM bets_details b JOIN Account_Details ad ON b.username = ad.username WHERE FIND_IN_SET(:selectedNumber, REPLACE(b.selected_numbers, ' ', '')) > 0 group by ad.username;
+    @Query(value = "SELECT new com.arrow.Arrow.dto.BetListDTO(b.id, b.selected_numbers, b.bet_amount) FROM Bet b " +
+            "WHERE b.user.username=:username AND b.slot = :slots ORDER BY b.bet_time DESC")
 
-    @Query(value = "SELECT b.id, b.selected_numbers, b.bet_amount FROM Bet b ORDER BY b.bet_time DESC")
-    Page<Bet> findLatestBet(Pageable pageable);
+    Page<BetListDTO> findLatestBet(Pageable pageable, @Param("username") String username, @Param("slots") String slots);
 }

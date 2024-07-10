@@ -1,7 +1,9 @@
 package com.arrow.Arrow.controller;
 
+import com.arrow.Arrow.ExceptionHandling.UserNotFoundException;
 import com.arrow.Arrow.dto.WinnerDTO;
 import com.arrow.Arrow.dto.BetsDTO;
+import com.arrow.Arrow.repository.UserRepository;
 import com.arrow.Arrow.services.BetService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +27,9 @@ public class BetController {
     @Autowired
     private BetService betService;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @PostMapping(path = "/submit/slot1/{username}")
     public List<String> submitBetSlot1(@RequestBody BetsDTO betsDTO, @PathVariable String username) {
         logger.info("Request JSON: {}", betsDTO);
@@ -41,14 +46,18 @@ public class BetController {
     @PostMapping("/winner")
     //To be used by admin
     public List<WinnerDTO> getUsernameBySelectedNumbers(@RequestParam("winner") String number, @RequestParam("slot") String slots) {
-        //webSocketController.broadcastNumber(number); // Broadcast the number to clients via WebSocket
-        //LocalDateTime yesterday = LocalDateTime.now().minusDays(1).withHour(16).withMinute(0).withSecond(0).withNano(0);
         return betService.getUsernameBySelectedNumbers(number,slots);
     }
 
-    @GetMapping("/lists")
-    public List<List<String>> getList(){
-        return betService.getLatestRecords();
+    @GetMapping("/lists/{username}")
+    public List<List<String>> getList(@PathVariable String username, @RequestParam("slot") String slot){
+        logger.info("Inside getList controller method");
+        if(userRepository.findByUsername(username)!=null) {
+            logger.info("Username validated");
+            return betService.getLatestRecords(username, slot);
+        }else {
+            throw new UserNotFoundException("User not found");
+        }
     }
 
 
@@ -75,5 +84,4 @@ public class BetController {
     public String fetchSlot2(){
         return messageStorageSlot2;
     }
-
 }

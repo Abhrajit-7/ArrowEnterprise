@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dataContainer = document.getElementById('data-container');
 
     let selectedNumbers = [];
-    let balance = 1000; // Starting balance
+    let balance = 0; // Starting balance
     let username = 'Unison07';
 
     // Create number buttons dynamically

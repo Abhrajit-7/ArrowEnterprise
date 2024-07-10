@@ -37,10 +37,6 @@ public class Bet {
     @Column(name = "bet_time", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp bet_time;
 
-    @Enumerated(EnumType.STRING)
-    //@Column(name = "bet_status", nullable = true)
-    //private BetStatus betStatus;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "username", referencedColumnName = "username")
     private User user;

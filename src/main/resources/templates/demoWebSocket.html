@@ -158,6 +158,23 @@
     background-color: #28a745;
     cursor: not-allowed;
 }
+
+.refresh-button {
+    position: absolute;
+    top: 10px; /* Adjust as needed */
+    right: 10px; /* Adjust as needed */
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.refresh-button:hover {
+    background-color: #0056b3;
+}
+
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
@@ -185,6 +202,7 @@
     <div class="section">
         <h2>Withdrawal Transactions</h2>
         <div id="transactions" class="transaction-container"></div>
+        <button id="refresh-button" class="refresh-button">Refresh</button>
     </div>
 
     <div class="section">

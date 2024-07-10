@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                         const winnerRows = [
                             { label: 'Username:', value: winner.username },
-                            { label: 'Total Invested:', value: `Rs. ${winner.totalInvested.toFixed(2)}` },
+                            { label: 'Total Deposit:', value: `Rs. ${winner.totalInvested.toFixed(2)}` },
                             { label: 'Selected Numbers:', value: winner.selectedNumbers }
                         ];
 
@@ -159,7 +159,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     winnersDiv.innerHTML = '<p>Failed to fetch winners. Please try again later.</p>';
                 });
             });
+
+            document.getElementById('refresh-button').addEventListener('click', function() {
+                        window.location.reload(true);
         });
+});
 function confirmTransaction(transactionId, amount, transactionElement) {
     const confirmButton = transactionElement.querySelector('.confirm-button');
     confirmButton.disabled = true;
