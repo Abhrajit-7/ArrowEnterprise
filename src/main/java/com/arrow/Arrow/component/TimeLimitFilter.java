@@ -39,6 +39,15 @@ public class TimeLimitFilter extends OncePerRequestFilter {
         return !path.startsWith("/api/v1/teer/submit/");
         //return matcher.matches(request);
     }
+    private TimeRange getTimeRange(String requestURI) {
+        for (Map.Entry<String, TimeRange> entry : TIME_RANGES.entrySet()) {
+            String key = entry.getKey();
+            if (requestURI.matches(key.replace("{username}", ".*"))) {
+                return entry.getValue();
+            }
+        }
+        return null;
+    }
     @Override
     protected void doFilterInternal(jakarta.servlet.http.HttpServletRequest request, jakarta.servlet.http.HttpServletResponse response, jakarta.servlet.FilterChain filterChain) throws jakarta.servlet.ServletException, IOException {
 
@@ -51,7 +60,7 @@ public class TimeLimitFilter extends OncePerRequestFilter {
         logger.info("Request URL : {}",requestURI);
 
         // If a match is found, get the corresponding time range
-        TimeRange timeRange = TIME_RANGES.get(requestURI);
+        TimeRange timeRange = getTimeRange(requestURI);
         logger.info("TimeRange is {}", timeRange);
         if (timeRange != null) {
             // Get the current time
